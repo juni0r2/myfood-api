@@ -1,11 +1,8 @@
 package br.com.myfood.service;
 
-import org.springframework.stereotype.Component;
-
 import br.com.myfood.modelo.Cliente;
 import br.com.myfood.notificacao.Notificador;
 
-@Component
 public class AtivacaoClienteService {
 
 	private Notificador notificador;
