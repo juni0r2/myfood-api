@@ -19,6 +19,7 @@ public class InclusaoCozinha {
                 CadastroCozinha bean = applicationContext.getBean(CadastroCozinha.class);
 
                 Cozinha cozinha1 = new Cozinha();
+                cozinha1.setId(1L);
                 cozinha1.setNome("Brasileira");
                 Cozinha cozinha2 = new Cozinha();
                 cozinha2.setNome("Japonesa");
@@ -28,5 +29,7 @@ public class InclusaoCozinha {
 
                 System.out.printf("%d - %s\n", cozinha1.getId(), cozinha1.getNome());
                 System.out.printf("%d - %s\n", cozinha2.getId(), cozinha2.getNome());
+
+                bean.listar().forEach(c -> System.out.println(c));
    }
 }
