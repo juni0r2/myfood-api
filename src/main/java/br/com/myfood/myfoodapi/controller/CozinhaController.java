@@ -13,7 +13,7 @@ import br.com.myfood.myfoodapi.infrastructure.CozinhaRepositoryImpl;
 
 @RestController
 @RequestMapping("/cozinhas")
-public class ConzinhaController {
+public class CozinhaController {
     
     @Autowired
     private CozinhaRepositoryImpl service;

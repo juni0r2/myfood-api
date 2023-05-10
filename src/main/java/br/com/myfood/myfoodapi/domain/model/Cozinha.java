@@ -8,6 +8,7 @@ import javax.persistence.Id;
 
 import lombok.Data;
 
+// @JsonRootName(value = "gastronomia") Caso queira mudar a representação 
 @Data
 @Entity
 public class Cozinha {
@@ -16,6 +17,8 @@ public class Cozinha {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // @JsonIgnore Caso queria ignorar o parammetro na representação
+    // @JsonProperty("titulo") Caso queria mudar nome do parametro na representção
     @Column(name = "nom_cozinha")
     private String nome;
 }
