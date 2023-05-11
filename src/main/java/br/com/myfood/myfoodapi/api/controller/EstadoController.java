@@ -1,4 +1,4 @@
-package br.com.myfood.myfoodapi.controller;
+package br.com.myfood.myfoodapi.api.controller;
 
 import java.util.List;
 
