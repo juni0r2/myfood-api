@@ -34,6 +34,7 @@ public class CozinhaRepositoryImpl implements CozinhaRepository {
         return this.manager.find(Cozinha.class, id);
     }
 
+    @Transactional
     @Override
     public void remover(Cozinha cozinha) {
         cozinha = this.buscaPorId(cozinha.getId());
