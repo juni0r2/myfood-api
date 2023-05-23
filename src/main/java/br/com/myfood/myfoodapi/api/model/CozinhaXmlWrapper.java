@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+// import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
 import br.com.myfood.myfoodapi.domain.model.Cozinha;
 import lombok.Data;
@@ -17,7 +17,7 @@ public class CozinhaXmlWrapper {
 
     // @JacksonXmlProperty(localName = "cozinha")
     @JsonProperty(value = "cozinha")
-    @JacksonXmlElementWrapper(useWrapping = false)
+    // @JacksonXmlElementWrapper(useWrapping = false)
     @NonNull
     private List<Cozinha> cozinhas;
 }

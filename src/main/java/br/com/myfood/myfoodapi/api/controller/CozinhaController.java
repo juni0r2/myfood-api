@@ -6,7 +6,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,25 +17,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.myfood.myfoodapi.api.model.CozinhaXmlWrapper;
 import br.com.myfood.myfoodapi.domain.model.Cozinha;
-import br.com.myfood.myfoodapi.infrastructure.CozinhaRepositoryImpl;
+import br.com.myfood.myfoodapi.domain.service.CadastroCozinhaService;
 
 @RestController
 @RequestMapping("/cozinhas")
 public class CozinhaController {
 
     @Autowired
-    private CozinhaRepositoryImpl service;
+    private CadastroCozinhaService service;
 
     @GetMapping
     public List<Cozinha> lista() {
         return this.service.listar();
-    }
-
-    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
-    public CozinhaXmlWrapper listar() {
-        return new CozinhaXmlWrapper(this.service.listar());
     }
 
     @GetMapping("/{id}")
