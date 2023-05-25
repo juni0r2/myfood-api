@@ -15,13 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.model.Restaurante;
 import br.com.myfood.myfoodapi.domain.service.CadastroRestauranteService;
 
 @RestController
 @RequestMapping("/restaurantes")
 public class RestauranteController {
-    
+
     @Autowired
     private CadastroRestauranteService cadastroRestaurante;
 
@@ -32,49 +33,71 @@ public class RestauranteController {
     }
 
     @PostMapping
-    public ResponseEntity<Restaurante> salvar(@RequestBody Restaurante restauranteInput) {
-        Restaurante restauranteSalvo = this.cadastroRestaurante.salvar(restauranteInput);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(restauranteSalvo);
+    public ResponseEntity<?> salvar(@RequestBody Restaurante restauranteInput) {
+
+        try {
+
+            Restaurante restauranteSalvo = this.cadastroRestaurante.salvar(restauranteInput);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(restauranteSalvo);
+        } catch (EntidadeNaoEncontradaException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Restaurante> buscaPorId(@PathVariable Long id) {
-        Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
 
-        if (restauranteRecuperado == null)
+        try {
+            Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
+            return ResponseEntity.ok(restauranteRecuperado);
+        } catch (EntidadeNaoEncontradaException e) {
             return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(restauranteRecuperado);
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Restaurante> atualizar(@PathVariable Long id, @RequestBody Restaurante restauranteInput) {
-        Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
-
-        if (restauranteRecuperado == null) {
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Restaurante restauranteInput) {
+        
+        Restaurante restauranteRecuperado = null;
+        try {
+            restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
+        } catch (EntidadeNaoEncontradaException e) {
             return ResponseEntity.notFound().build();
         }
 
-        BeanUtils.copyProperties(restauranteInput, restauranteRecuperado, "id");
-        restauranteRecuperado = this.cadastroRestaurante.salvar(restauranteRecuperado);
-        return ResponseEntity.ok(restauranteRecuperado);
+        if (restauranteRecuperado == null)
+            return ResponseEntity.notFound().build();
+
+        try {
+
+            BeanUtils.copyProperties(restauranteInput, restauranteRecuperado, "id");
+            restauranteRecuperado = this.cadastroRestaurante.salvar(restauranteRecuperado);
+            return ResponseEntity.ok(restauranteRecuperado);
+        } catch (EntidadeNaoEncontradaException e) {
+            return ResponseEntity
+                .badRequest()
+                .body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Restaurante> remover(@PathVariable Long id) {
         try {
             Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
-            
+
             if (restauranteRecuperado == null) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             this.cadastroRestaurante.remover(restauranteRecuperado);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
-    
+
 }
