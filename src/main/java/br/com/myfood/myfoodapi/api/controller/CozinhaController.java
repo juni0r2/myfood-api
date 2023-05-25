@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.model.Cozinha;
 import br.com.myfood.myfoodapi.domain.service.CadastroCozinhaService;
 
@@ -71,14 +72,22 @@ public class CozinhaController {
             
             Cozinha cozinha = this.service.buscaPorId(id);
             
-            if (cozinha == null) {
-                return ResponseEntity.notFound().build();
-            }
+            // if (cozinha == null) {
+            //     return ResponseEntity.notFound().build();
+            // }
             
             this.service.remover(cozinha);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity
+            .noContent()
+            .build();
         } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity
+            .status(HttpStatus.CONFLICT)
+            .build();
+        } catch (EntidadeNaoEncontradaException e) {
+            return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(e.getMessage());
         }
     }
 }

@@ -69,9 +69,6 @@ public class RestauranteController {
             return ResponseEntity.notFound().build();
         }
 
-        if (restauranteRecuperado == null)
-            return ResponseEntity.notFound().build();
-
         try {
 
             BeanUtils.copyProperties(restauranteInput, restauranteRecuperado, "id");
