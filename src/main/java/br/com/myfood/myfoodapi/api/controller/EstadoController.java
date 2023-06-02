@@ -28,14 +28,14 @@ public class EstadoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?
-    > buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         try {
             Estado estado = this.service.buscarPorId(id);
             return ResponseEntity.ok(estado);
         } catch (EntidadeNaoEncontradaException e) {
             return ResponseEntity
-                    .badRequest().body(e.getMessage());
+                    .badRequest()
+                    .body(e.getMessage());
         }
     }
 
