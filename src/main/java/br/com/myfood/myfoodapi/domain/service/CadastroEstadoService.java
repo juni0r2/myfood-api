@@ -19,10 +19,14 @@ public class CadastroEstadoService {
         return this.repository.findAll();
     }
 
-    public Estado buscarPorId(Long id) {
+    public Estado buscaPorId(Long id) {
         return this.repository
         .findById(id)
         .orElseThrow(() -> new EntidadeNaoEncontradaException("Nenhum estado não encontrado com id: "+id));
+    }
+
+    public Estado salva(Estado estado){
+        return this.repository.save(estado);
     }
     
 }

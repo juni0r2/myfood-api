@@ -2,12 +2,11 @@ package br.com.myfood.myfoodapi.api.controller;
 
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.model.Estado;
@@ -30,12 +29,33 @@ public class EstadoController {
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         try {
-            Estado estado = this.service.buscarPorId(id);
+            Estado estado = this.service.buscaPorId(id);
             return ResponseEntity.ok(estado);
         } catch (EntidadeNaoEncontradaException e) {
             return ResponseEntity
+                    .notFound()
+                    .build();
+
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<Estado> adiciona(@RequestBody Estado estadoInput) {
+        this.service.salva(estadoInput);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualiza(@PathVariable Long id, @RequestBody Estado estadoInput) {
+        try {
+            Estado estado = this.service.buscaPorId(id);
+            BeanUtils.copyProperties(estadoInput, estado, "id");
+            estado = this.service.salva(estado);
+            return ResponseEntity.ok(estado);
+        } catch (EntidadeNaoEncontradaException ex) {
+            return ResponseEntity
                     .badRequest()
-                    .body(e.getMessage());
+                    .body(ex.getMessage());
         }
     }
 

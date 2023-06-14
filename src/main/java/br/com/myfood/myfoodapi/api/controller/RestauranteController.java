@@ -27,13 +27,13 @@ public class RestauranteController {
     private CadastroRestauranteService cadastroRestaurante;
 
     @GetMapping
-    public ResponseEntity<List<Restaurante>> listar() {
+    public ResponseEntity<List<Restaurante>> lista() {
         List<Restaurante> lista = this.cadastroRestaurante.listar();
         return ResponseEntity.ok(lista);
     }
 
     @PostMapping
-    public ResponseEntity<?> salvar(@RequestBody Restaurante restauranteInput) {
+    public ResponseEntity<?> salva(@RequestBody Restaurante restauranteInput) {
 
         try {
 
@@ -60,8 +60,8 @@ public class RestauranteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Restaurante restauranteInput) {
-        
+    public ResponseEntity<?> atualiza(@PathVariable Long id, @RequestBody Restaurante restauranteInput) {
+
         Restaurante restauranteRecuperado = null;
         try {
             restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
@@ -76,13 +76,13 @@ public class RestauranteController {
             return ResponseEntity.ok(restauranteRecuperado);
         } catch (EntidadeNaoEncontradaException e) {
             return ResponseEntity
-                .badRequest()
-                .body(e.getMessage());
+                    .badRequest()
+                    .body(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Restaurante> remover(@PathVariable Long id) {
+    public ResponseEntity<Restaurante> remove(@PathVariable Long id) {
         try {
             Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
 

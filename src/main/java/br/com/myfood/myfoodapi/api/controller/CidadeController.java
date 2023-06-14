@@ -33,7 +33,7 @@ public class CidadeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<?> buscaPorId(@PathVariable Long id) {
         try {
             Cidade cidadeEncontrada = this.service.buscarPorId(id);
             return ResponseEntity.ok(cidadeEncontrada);
@@ -43,17 +43,16 @@ public class CidadeController {
     }
 
     @PostMapping
-    public ResponseEntity<Cidade> adicionar(@RequestBody Cidade cozinhaInput) {
+    public ResponseEntity<Cidade> adiciona(@RequestBody Cidade cozinhaInput) {
         this.service.salvar(cozinhaInput);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Cidade cozinha) {
+    public ResponseEntity<?> atualiza(@PathVariable Long id, @RequestBody Cidade cozinha) {
 
         try {
             Cidade cozinhaRecuperada = this.service.buscarPorId(id);
-            System.out.println(cozinhaRecuperada);
             BeanUtils.copyProperties(cozinha, cozinhaRecuperada, "id");
             cozinhaRecuperada = this.service.salvar(cozinhaRecuperada);
             return ResponseEntity
@@ -66,7 +65,7 @@ public class CidadeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletar(@PathVariable Long id) {
+    public ResponseEntity<?> deleta(@PathVariable Long id) {
 
         try {
             Cidade cidadeRecuperada = this.service.buscarPorId(id);

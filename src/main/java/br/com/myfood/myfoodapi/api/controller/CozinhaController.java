@@ -46,12 +46,12 @@ public class CozinhaController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public Cozinha adicionar(@RequestBody Cozinha cozinhaInput) {
+    public Cozinha adiciona(@RequestBody Cozinha cozinhaInput) {
         return this.service.salvar(cozinhaInput);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cozinha> atualizar(@PathVariable Long id, @RequestBody Cozinha cozinha) {
+    public ResponseEntity<Cozinha> atualiza(@PathVariable Long id, @RequestBody Cozinha cozinha) {
 
         Cozinha cozinhaAtual = this.service.buscaPorId(id);
 
@@ -66,28 +66,24 @@ public class CozinhaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deletar(@PathVariable Long id) {
+    public ResponseEntity deleta(@PathVariable Long id) {
 
         try {
-            
+
             Cozinha cozinha = this.service.buscaPorId(id);
-            
-            // if (cozinha == null) {
-            //     return ResponseEntity.notFound().build();
-            // }
-            
+
             this.service.remover(cozinha);
             return ResponseEntity
-            .noContent()
-            .build();
+                    .noContent()
+                    .build();
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity
-            .status(HttpStatus.CONFLICT)
-            .build();
+                    .status(HttpStatus.CONFLICT)
+                    .build();
         } catch (EntidadeNaoEncontradaException e) {
             return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(e.getMessage());
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
         }
     }
 }
