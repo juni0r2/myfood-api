@@ -8,6 +8,7 @@ public class MyfoodApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MyfoodApiApplication.class, args);
+
 	}
 
 }

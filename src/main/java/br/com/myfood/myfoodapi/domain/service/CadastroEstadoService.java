@@ -28,5 +28,8 @@ public class CadastroEstadoService {
     public Estado salva(Estado estado){
         return this.repository.save(estado);
     }
-    
+
+    public void exclui(Estado estado) {
+        this.repository.delete(estado);
+    }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +56,23 @@ public class EstadoController {
         } catch (EntidadeNaoEncontradaException ex) {
             return ResponseEntity
                     .badRequest()
+                    .body(ex.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleta(@PathVariable  Long id) {
+        try {
+            Estado estado = this.service.buscaPorId(id);
+            this.service.exclui(estado);
+            return ResponseEntity.ok().build();
+        } catch (DataIntegrityViolationException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .build();
+        } catch (EntidadeNaoEncontradaException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
                     .body(ex.getMessage());
         }
     }
