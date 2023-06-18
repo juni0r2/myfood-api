@@ -22,7 +22,8 @@ public class CadastroEstadoService {
     public Estado buscaPorId(Long id) {
         return this.repository
         .findById(id)
-        .orElseThrow(() -> new EntidadeNaoEncontradaException("Nenhum estado não encontrado com id: "+id));
+        .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                String.format("Nenhum estado não encontrado com id: %d",id)));
     }
 
     public Estado salva(Estado estado){

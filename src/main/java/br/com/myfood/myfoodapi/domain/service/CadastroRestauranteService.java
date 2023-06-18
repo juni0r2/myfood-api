@@ -31,7 +31,8 @@ public class CadastroRestauranteService {
         Optional<Cozinha> cozinha = this.cozinhaRepository.findById(idCozinha);
 
         if (!cozinha.isPresent()) {
-            throw new EntidadeNaoEncontradaException("Nenhuma cozinha encontrada com id: "+ idCozinha);
+            throw new EntidadeNaoEncontradaException(
+                    String.format("Nenhuma cozinha encontrada com id: %d",idCozinha));
         }
 
         return this.repository.save(restaurante);
@@ -39,7 +40,8 @@ public class CadastroRestauranteService {
 
     public Restaurante buscaPorId(Long id) {
         return this.repository.findById(id)
-            .orElseThrow(() -> new EntidadeNaoEncontradaException("Nenhum restaurante encontrado com id: "+ id));
+            .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                    String.format("Nenhum restaurante encontrado com id: %d", id)));
     }
 
     public void remover(Restaurante restaurante) {

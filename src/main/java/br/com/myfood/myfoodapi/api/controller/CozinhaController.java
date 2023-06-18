@@ -2,6 +2,7 @@ package br.com.myfood.myfoodapi.api.controller;
 
 import java.util.List;
 
+import br.com.myfood.myfoodapi.domain.exception.EntidadeEmUsoException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -72,20 +73,17 @@ public class CozinhaController {
     public ResponseEntity<?> deleta(@PathVariable Long id) {
 
         try {
-
-            Cozinha cozinha = this.service.buscaPorId(id);
-
-            this.service.remover(cozinha);
+            this.service.remover(id);
             return ResponseEntity
                     .noContent()
                     .build();
-        } catch (DataIntegrityViolationException e) {
+        } catch (EntidadeEmUsoException e) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .build();
+                    .body(e.getMessage());
         } catch (EntidadeNaoEncontradaException e) {
             return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
+                    .status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());
         }
     }

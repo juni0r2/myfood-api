@@ -22,7 +22,8 @@ public class CadastroCidadeService {
     public Cidade buscarPorId(Long id) {
         return this.repository
             .findById(id)
-            .orElseThrow(() -> new EntidadeNaoEncontradaException("Nenhuma cidade encontrada com ID:"+id));
+            .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                    String.format("Nenhuma cidade encontrada com id: %d", id)));
     }
 
     public Cidade salvar(Cidade cozinhaInput) {
