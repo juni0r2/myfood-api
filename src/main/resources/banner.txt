@@ -1,0 +1,13 @@
+	     ___      .______   .______    __       __    ______     ___   .___________. __    ______   .__   __. 
+	    /   \     |   _  \  |   _  \  |  |     |  |  /      |   /   \  |           ||  |  /  __  \  |  \ |  | 
+	   /  ^  \    |  |_)  | |  |_)  | |  |     |  | |  ,----'  /  ^  \ `---|  |----`|  | |  |  |  | |   \|  | 
+	  /  /_\  \   |   ___/  |   ___/  |  |     |  | |  |      /  /_\  \    |  |     |  | |  |  |  | |  . `  | 
+	 /  _____  \  |  |      |  |      |  `----.|  | |  `----./  _____  \   |  |     |  | |  `--'  | |  |\   | 
+	/__/     \__\ | _|      | _|      |_______||__|  \______/__/     \__\  |__|     |__|  \______/  |__| \__| 
+	                                                                                                          
+	Application: ${spring.application.name} 
+	Version: ${spring.application.version}
+	ArtifactId: ${spring.application.artifactId}
+	Java: ${spring.application.java}
+	Port: ${server.port}
+	Context: ${server.servlet.context-path}
