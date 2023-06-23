@@ -42,4 +42,9 @@ public class TesteController {
     public List<Restaurante> listaPorNomeRestauranteECozinhaId(String nome, Long cozinhaId) {
         return this.restauranteRepository.findByNomeContainingAndCozinhaId(nome, cozinhaId);
     }
+
+    @GetMapping("/restaurantes/por-nome-named")
+    public List<Restaurante> listaPorNomeRestauranteECozinha(String nome, Long cozinhaId) {
+        return this.restauranteRepository.consultaPorNome(nome, cozinhaId);
+    }
 }
