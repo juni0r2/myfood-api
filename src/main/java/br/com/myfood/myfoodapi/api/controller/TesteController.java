@@ -50,6 +50,11 @@ public class TesteController {
 
     @GetMapping("/restaurantes/find-custom")
     public List<Restaurante> listaFind(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal) {
-        return this.restauranteRepository.find(nome, taxaInicial, taxaFinal);
+        return this.restauranteRepository.findCustomizado(nome, taxaInicial, taxaFinal);
+    }
+
+    @GetMapping("/restaurantes/find-criteria")
+    public List<Restaurante> listaFindCriteria(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal) {
+        return this.restauranteRepository.findCriteira(nome, taxaInicial, taxaFinal);
     }
 }
