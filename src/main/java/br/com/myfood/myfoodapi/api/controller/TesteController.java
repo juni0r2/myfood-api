@@ -1,5 +1,7 @@
 package br.com.myfood.myfoodapi.api.controller;
 
+import br.com.myfood.myfoodapi.infrastructore.spec.RestaurantesComFreteGratisSpec;
+import br.com.myfood.myfoodapi.infrastructore.spec.RestaurantesComNomeSemelhanteSpec;
 import br.com.myfood.myfoodapi.domain.model.Cozinha;
 import br.com.myfood.myfoodapi.domain.model.Restaurante;
 import br.com.myfood.myfoodapi.domain.repository.CozinhaRepository;
@@ -56,5 +58,14 @@ public class TesteController {
     @GetMapping("/restaurantes/find-criteria")
     public List<Restaurante> listaFindCriteria(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal) {
         return this.restauranteRepository.findCriteira(nome, taxaInicial, taxaFinal);
+    }
+
+    @GetMapping("/restaurantes/find-criteria-spec")
+    public List<Restaurante> listaFindCriteriaSpec(String nome) {
+
+        var comFreteGratis = new RestaurantesComFreteGratisSpec();
+        var comNomeSemelhante = new RestaurantesComNomeSemelhanteSpec(nome);
+
+        return this.restauranteRepository.findAll(comNomeSemelhante);
     }
 }
