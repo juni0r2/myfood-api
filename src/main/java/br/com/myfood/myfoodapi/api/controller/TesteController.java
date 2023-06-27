@@ -1,19 +1,22 @@
 package br.com.myfood.myfoodapi.api.controller;
 
-import br.com.myfood.myfoodapi.infrastructore.spec.RestaurantesComFreteGratisSpec;
-import br.com.myfood.myfoodapi.infrastructore.spec.RestaurantesComNomeSemelhanteSpec;
 import br.com.myfood.myfoodapi.domain.model.Cozinha;
 import br.com.myfood.myfoodapi.domain.model.Restaurante;
 import br.com.myfood.myfoodapi.domain.repository.CozinhaRepository;
 import br.com.myfood.myfoodapi.domain.repository.RestauranteRepository;
+import br.com.myfood.myfoodapi.infrastructore.spec.RestauranteSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import br.com.myfood.myfoodapi.infrastructore.spec.RestauranteSpecs.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+
+import static br.com.myfood.myfoodapi.infrastructore.spec.RestauranteSpecs.comFreteGratis;
+import static br.com.myfood.myfoodapi.infrastructore.spec.RestauranteSpecs.comNomeSemelhante;
 
 @RestController
 @RequestMapping("/teste")
@@ -62,10 +65,6 @@ public class TesteController {
 
     @GetMapping("/restaurantes/find-criteria-spec")
     public List<Restaurante> listaFindCriteriaSpec(String nome) {
-
-        var comFreteGratis = new RestaurantesComFreteGratisSpec();
-        var comNomeSemelhante = new RestaurantesComNomeSemelhanteSpec(nome);
-
-        return this.restauranteRepository.findAll(comNomeSemelhante);
+        return this.restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
     }
 }
