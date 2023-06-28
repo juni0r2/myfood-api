@@ -1,7 +1,11 @@
 package br.com.myfood.myfoodapi.api.infrastructure.repository;
 
 import br.com.myfood.myfoodapi.domain.model.Restaurante;
+import br.com.myfood.myfoodapi.domain.repository.RestauranteRepository;
 import br.com.myfood.myfoodapi.domain.repository.RestauranteRepositoryQueries;
+import br.com.myfood.myfoodapi.infrastructore.spec.RestauranteSpecs;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -18,11 +22,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static br.com.myfood.myfoodapi.infrastructore.spec.RestauranteSpecs.*;
+
 @Repository
 public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 
     @PersistenceContext
     private EntityManager manager;
+
+    @Autowired @Lazy
+    private RestauranteRepository repository;
 
     @Override
     public List<Restaurante> find(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal) {
@@ -93,4 +102,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
         return query.getResultList();
     }
 
+    public List<Restaurante> findComFreteGratisLazy(String nome) {
+        return this.repository.findAll(comFreteGratis());
+    }
 }

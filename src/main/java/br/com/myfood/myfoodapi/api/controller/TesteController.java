@@ -67,4 +67,9 @@ public class TesteController {
     public List<Restaurante> listaFindCriteriaSpec(String nome) {
         return this.restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
     }
+
+    @GetMapping("/restaurantes/find-lazy")
+    public List<Restaurante> listaFindComLazy(String nome) {
+        return this.restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
+    }
 }
