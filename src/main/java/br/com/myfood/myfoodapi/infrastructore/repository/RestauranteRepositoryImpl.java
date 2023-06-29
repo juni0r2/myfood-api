@@ -1,4 +1,4 @@
-package br.com.myfood.myfoodapi.api.infrastructure.repository;
+package br.com.myfood.myfoodapi.infrastructore.repository;
 
 import br.com.myfood.myfoodapi.domain.model.Restaurante;
 import br.com.myfood.myfoodapi.domain.repository.RestauranteRepository;

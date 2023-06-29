@@ -72,4 +72,9 @@ public class TesteController {
     public List<Restaurante> listaFindComLazy(String nome) {
         return this.restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
     }
+
+    @GetMapping("/restaurantes/find-jpa-custom")
+    public Optional<Restaurante> buscaUnicoCustomJpa() {
+        return this.restauranteRepository.buscaPrimeiro();
+    }
 }
