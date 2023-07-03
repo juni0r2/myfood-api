@@ -21,7 +21,7 @@ public class Cozinha {
 
     // @JsonIgnore Caso queria ignorar o parammetro na representação
     // @JsonProperty("titulo") Caso queria mudar nome do parametro na representção
-    @Column(name = "nom_cozinha")
+    @Column(name = "nome",nullable = false)
     private String nome;
 
     @JsonIgnore
