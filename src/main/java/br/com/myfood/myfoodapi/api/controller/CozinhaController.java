@@ -35,7 +35,7 @@ public class CozinhaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscar(@PathVariable Long id) {
+    public ResponseEntity<?> busca(@PathVariable Long id) {
         try {
             Cozinha cozinha = this.service.buscaPorId(id);
             return ResponseEntity.ok(cozinha);
