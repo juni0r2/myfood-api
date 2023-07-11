@@ -22,7 +22,9 @@ public class CadastroRestauranteService {
     private CozinhaRepository cozinhaRepository;
 
     public List<Restaurante> listar() {
-        return this.repository.findAll();
+        List<Restaurante> lista = this.repository.findAll();
+        lista.get(0).getCozinha().getNome();
+        return lista;
     }
 
     public Restaurante salvar(Restaurante restaurante) {
