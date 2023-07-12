@@ -39,7 +39,7 @@ public class Pedido {
     private LocalDateTime dataCancelamento;
 
     @Column(columnDefinition = "datetime")
-    private LocalDateTime dataEntregua;
+    private LocalDateTime dataEntrega;
 
     @ManyToOne
     @JoinColumn(nullable = false)
