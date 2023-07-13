@@ -88,6 +88,7 @@ public class CozinhaController {
 //        }
 //    }
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleta(@PathVariable Long id) {
         this.service.remover(id);
     }
