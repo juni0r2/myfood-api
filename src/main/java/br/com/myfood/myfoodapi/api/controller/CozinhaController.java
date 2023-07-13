@@ -69,22 +69,26 @@ public class CozinhaController {
         }
     }
 
+    //    @DeleteMapping("/{id}")
+//    public ResponseEntity<?> deleta(@PathVariable Long id) {
+//
+//        try {
+//            this.service.remover(id);
+//            return ResponseEntity
+//                    .noContent()
+//                    .build();
+//        } catch (EntidadeEmUsoException e) {
+//            return ResponseEntity
+//                    .status(HttpStatus.CONFLICT)
+//                    .body(e.getMessage());
+//        } catch (EntidadeNaoEncontradaException e) {
+//            return ResponseEntity
+//                    .status(HttpStatus.NOT_FOUND)
+//                    .body(e.getMessage());
+//        }
+//    }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleta(@PathVariable Long id) {
-
-        try {
-            this.service.remover(id);
-            return ResponseEntity
-                    .noContent()
-                    .build();
-        } catch (EntidadeEmUsoException e) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(e.getMessage());
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
-        }
+    public void deleta(@PathVariable Long id) {
+        this.service.remover(id);
     }
 }
