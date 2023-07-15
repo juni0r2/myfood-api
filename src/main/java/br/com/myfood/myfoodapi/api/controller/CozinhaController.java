@@ -35,15 +35,8 @@ public class CozinhaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> busca(@PathVariable Long id) {
-        try {
-            Cozinha cozinha = this.service.buscaPorId(id);
-            return ResponseEntity.ok(cozinha);
-        } catch (EntidadeNaoEncontradaException ex) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(ex.getMessage());
-        }
+    public Cozinha busca(@PathVariable Long id) {
+        return this.service.buscaPorId(id);
     }
 
     @PostMapping
@@ -53,40 +46,15 @@ public class CozinhaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualiza(@PathVariable Long id, @RequestBody Cozinha cozinha) {
+    public Cozinha atualiza(@PathVariable Long id, @RequestBody Cozinha cozinha) {
 
-        try {
-            Cozinha cozinhaAtual = this.service.buscaPorId(id);
+        Cozinha cozinhaAtual = this.service.buscaPorId(id);
 
-            BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
-            cozinhaAtual = this.service.salvar(cozinhaAtual);
+        BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 
-            return ResponseEntity.ok().body(cozinhaAtual);
-        } catch (EntidadeNaoEncontradaException ex) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(ex.getMessage());
-        }
+        return this.service.salvar(cozinhaAtual);
     }
 
-    //    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deleta(@PathVariable Long id) {
-//
-//        try {
-//            this.service.remover(id);
-//            return ResponseEntity
-//                    .noContent()
-//                    .build();
-//        } catch (EntidadeEmUsoException e) {
-//            return ResponseEntity
-//                    .status(HttpStatus.CONFLICT)
-//                    .body(e.getMessage());
-//        } catch (EntidadeNaoEncontradaException e) {
-//            return ResponseEntity
-//                    .status(HttpStatus.NOT_FOUND)
-//                    .body(e.getMessage());
-//        }
-//    }
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleta(@PathVariable Long id) {
