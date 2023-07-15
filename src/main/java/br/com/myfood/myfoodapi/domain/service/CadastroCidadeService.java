@@ -3,6 +3,7 @@ package br.com.myfood.myfoodapi.domain.service;
 import java.util.List;
 
 import br.com.myfood.myfoodapi.domain.exception.EntidadeEmUsoException;
+import br.com.myfood.myfoodapi.domain.model.Estado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -20,6 +21,9 @@ public class CadastroCidadeService {
     @Autowired
     private CidadeRepository repository;
 
+    @Autowired
+    private CadastroEstadoService estadoService;
+
     public List<Cidade> listar() {
         return this.repository.findAll();
     }
@@ -32,6 +36,11 @@ public class CadastroCidadeService {
     }
 
     public Cidade salvar(Cidade cozinhaInput) {
+
+        Long idEstado = cozinhaInput.getEstado().getId();
+        Estado estado = this.estadoService.buscaPorId(idEstado);
+        cozinhaInput.setEstado(estado);
+
         return this.repository.save(cozinhaInput);
     }
 

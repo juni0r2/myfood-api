@@ -3,6 +3,7 @@ package br.com.myfood.myfoodapi.api.controller;
 import java.util.List;
 import java.util.Map;
 
+import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,17 +35,24 @@ public class CidadeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cidade adiciona(@RequestBody Cidade cozinhaInput) {
-        return this.service.salvar(cozinhaInput);
+        try {
+            return this.service.salvar(cozinhaInput);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
     public Cidade atualiza(@PathVariable Long id, @RequestBody Cidade cozinha) {
 
-        Cidade cozinhaRecuperada = this.service.buscarPorId(id);
+        Cidade cidadeRecuperada = this.service.buscarPorId(id);
 
-        BeanUtils.copyProperties(cozinha, cozinhaRecuperada, "id");
-
-        return this.service.salvar(cozinhaRecuperada);
+        BeanUtils.copyProperties(cozinha, cidadeRecuperada, "id");
+        try {
+            return this.service.salvar(cidadeRecuperada);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
