@@ -3,7 +3,10 @@ package br.com.myfood.myfoodapi.domain.service;
 import java.util.List;
 import java.util.Optional;
 
+import br.com.myfood.myfoodapi.domain.exception.EntidadeEmUsoException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
@@ -14,12 +17,15 @@ import br.com.myfood.myfoodapi.domain.repository.RestauranteRepository;
 
 @Service
 public class CadastroRestauranteService {
+
+    public static final String MSG_RESTAURANTE_NAO_ENCONTRADO = "Nenhum restaurante encontrado com id: %d";
+    public static final String MSG_RESTAURANTE_EM_USO = "Restaurante de código %d não pode ser removido, pois está em uso";
     
     @Autowired
     private RestauranteRepository repository;
 
     @Autowired
-    private CozinhaRepository cozinhaRepository;
+    private CadastroCozinhaService cozinhaService;
 
     public List<Restaurante> listar() {
         List<Restaurante> lista = this.repository.findAll();
@@ -30,12 +36,8 @@ public class CadastroRestauranteService {
     public Restaurante salvar(Restaurante restaurante) {
 
         Long idCozinha = restaurante.getCozinha().getId();
-        Optional<Cozinha> cozinha = this.cozinhaRepository.findById(idCozinha);
-
-        if (!cozinha.isPresent()) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format("Nenhuma cozinha encontrada com id: %d",idCozinha));
-        }
+        Cozinha cozinha = this.cozinhaService.buscaPorId(idCozinha);
+        restaurante.setCozinha(cozinha);
 
         return this.repository.save(restaurante);
     }
@@ -43,11 +45,18 @@ public class CadastroRestauranteService {
     public Restaurante buscaPorId(Long id) {
         return this.repository.findById(id)
             .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                    String.format("Nenhum restaurante encontrado com id: %d", id)));
+                    String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id)));
     }
 
-    public void remover(Restaurante restaurante) {
-        restaurante = this.buscaPorId(restaurante.getId());
-        this.repository.delete(restaurante);
+    public void remover(Long id) {
+
+        try {
+            Restaurante restaurante = this.buscaPorId(id);
+            this.repository.delete(restaurante);
+        } catch (EmptyResultDataAccessException e) {
+            throw new EntidadeNaoEncontradaException(String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id));
+        } catch (DataIntegrityViolationException e) {
+            throw new EntidadeEmUsoException(String.format(MSG_RESTAURANTE_EM_USO,id));
+        }
     }
 }

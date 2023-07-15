@@ -21,60 +21,35 @@ public class EstadoController {
     private CadastroEstadoService service;
 
     @GetMapping
-    public ResponseEntity<List<Estado>> listar() {
-        List<Estado> estados = this.service.listar();
-        return ResponseEntity
-                .ok(estados);
+    public List<Estado> listar() {
+        return this.service.listar();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
-        try {
-            Estado estado = this.service.buscaPorId(id);
-            return ResponseEntity.ok(estado);
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity
-                    .notFound()
-                    .build();
-
-        }
+    public Estado buscarPorId(@PathVariable Long id) {
+        return this.service.buscaPorId(id);
     }
 
     @PostMapping
-    public ResponseEntity<Estado> adiciona(@RequestBody Estado estadoInput) {
-        this.service.salva(estadoInput);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @ResponseStatus(HttpStatus.CREATED)
+    public Estado adiciona(@RequestBody Estado estadoInput) {
+        return this.service.salva(estadoInput);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualiza(@PathVariable Long id, @RequestBody Estado estadoInput) {
-        try {
-            Estado estado = this.service.buscaPorId(id);
-            BeanUtils.copyProperties(estadoInput, estado, "id");
-            estado = this.service.salva(estado);
-            return ResponseEntity.ok(estado);
-        } catch (EntidadeNaoEncontradaException ex) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(ex.getMessage());
-        }
+    public Estado atualiza(@PathVariable Long id, @RequestBody Estado estadoInput) {
+
+        Estado estado = this.service.buscaPorId(id);
+
+        BeanUtils.copyProperties(estadoInput, estado, "id");
+
+        return this.service.salva(estado);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleta(@PathVariable  Long id) {
-        try {
-            Estado estado = this.service.buscaPorId(id);
-            this.service.exclui(estado);
-            return ResponseEntity.ok().build();
-        } catch (DataIntegrityViolationException ex) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .build();
-        } catch (EntidadeNaoEncontradaException ex) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(ex.getMessage());
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleta(@PathVariable Long id) {
+        this.service.exclui(id);
     }
 
 }

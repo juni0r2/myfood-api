@@ -27,51 +27,30 @@ public class CidadeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscaPorId(@PathVariable Long id) {
-        try {
-            Cidade cidadeEncontrada = this.service.buscarPorId(id);
-            return ResponseEntity.ok(cidadeEncontrada);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+    public Cidade buscaPorId(@PathVariable Long id) {
+        return this.service.buscarPorId(id);
     }
 
     @PostMapping
-    public ResponseEntity<Cidade> adiciona(@RequestBody Cidade cozinhaInput) {
-        this.service.salvar(cozinhaInput);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @ResponseStatus(HttpStatus.CREATED)
+    public Cidade adiciona(@RequestBody Cidade cozinhaInput) {
+        return this.service.salvar(cozinhaInput);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualiza(@PathVariable Long id, @RequestBody Cidade cozinha) {
+    public Cidade atualiza(@PathVariable Long id, @RequestBody Cidade cozinha) {
 
-        try {
-            Cidade cozinhaRecuperada = this.service.buscarPorId(id);
-            BeanUtils.copyProperties(cozinha, cozinhaRecuperada, "id");
-            cozinhaRecuperada = this.service.salvar(cozinhaRecuperada);
-            return ResponseEntity
-                    .ok(cozinhaRecuperada);
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(e.getMessage());
-        }
+        Cidade cozinhaRecuperada = this.service.buscarPorId(id);
+
+        BeanUtils.copyProperties(cozinha, cozinhaRecuperada, "id");
+
+        return this.service.salvar(cozinhaRecuperada);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleta(@PathVariable Long id) {
-
-        try {
-            Cidade cidadeRecuperada = this.service.buscarPorId(id);
-            this.service.remover(cidadeRecuperada);
-            return ResponseEntity
-                    .noContent()
-                    .build();
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(e.getMessage());
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleta(@PathVariable Long id) {
+        this.service.remover(id);
     }
 
 }
