@@ -3,6 +3,7 @@ package br.com.myfood.myfoodapi.api.controller;
 import java.util.List;
 import java.util.Map;
 
+import br.com.myfood.myfoodapi.domain.exception.EstadoNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,8 @@ public class CidadeController {
     public Cidade adiciona(@RequestBody Cidade cozinhaInput) {
         try {
             return this.service.salvar(cozinhaInput);
-        } catch (EntidadeNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage());
+        } catch (EstadoNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage(), e);
         }
     }
 
@@ -50,8 +51,8 @@ public class CidadeController {
         BeanUtils.copyProperties(cozinha, cidadeRecuperada, "id");
         try {
             return this.service.salvar(cidadeRecuperada);
-        } catch (EntidadeNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage());
+        } catch (EstadoNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage(), e);
         }
     }
 

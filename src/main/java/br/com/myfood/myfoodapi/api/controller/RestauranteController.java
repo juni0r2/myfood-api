@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
+import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,17 +38,26 @@ public class RestauranteController {
 
     @GetMapping("/{id}")
     public Restaurante buscaPorId(@PathVariable Long id) {
-        return this.cadastroRestaurante.buscaPorId(id);
+        try {
+            return this.cadastroRestaurante.buscaPorId(id);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
     public Restaurante atualiza(@PathVariable Long id, @RequestBody Restaurante restauranteInput) {
 
-            Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
+        Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
 
-            BeanUtils.copyProperties(restauranteInput, restauranteRecuperado,
-                    "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
+        BeanUtils.copyProperties(restauranteInput, restauranteRecuperado,
+                "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
+
+        try {
             return this.cadastroRestaurante.salvar(restauranteRecuperado);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
