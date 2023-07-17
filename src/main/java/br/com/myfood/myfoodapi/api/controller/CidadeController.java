@@ -3,6 +3,8 @@ package br.com.myfood.myfoodapi.api.controller;
 import java.util.List;
 import java.util.Map;
 
+import br.com.myfood.myfoodapi.domain.exception.EstadoNaoEncontradaException;
+import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,51 +29,37 @@ public class CidadeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscaPorId(@PathVariable Long id) {
-        try {
-            Cidade cidadeEncontrada = this.service.buscarPorId(id);
-            return ResponseEntity.ok(cidadeEncontrada);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+    public Cidade buscaPorId(@PathVariable Long id) {
+        return this.service.buscarPorId(id);
     }
 
     @PostMapping
-    public ResponseEntity<Cidade> adiciona(@RequestBody Cidade cozinhaInput) {
-        this.service.salvar(cozinhaInput);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @ResponseStatus(HttpStatus.CREATED)
+    public Cidade adiciona(@RequestBody Cidade cozinhaInput) {
+        try {
+            return this.service.salvar(cozinhaInput);
+        } catch (EstadoNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualiza(@PathVariable Long id, @RequestBody Cidade cozinha) {
+    public Cidade atualiza(@PathVariable Long id, @RequestBody Cidade cozinha) {
 
+        Cidade cidadeRecuperada = this.service.buscarPorId(id);
+
+        BeanUtils.copyProperties(cozinha, cidadeRecuperada, "id");
         try {
-            Cidade cozinhaRecuperada = this.service.buscarPorId(id);
-            BeanUtils.copyProperties(cozinha, cozinhaRecuperada, "id");
-            cozinhaRecuperada = this.service.salvar(cozinhaRecuperada);
-            return ResponseEntity
-                    .ok(cozinhaRecuperada);
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(e.getMessage());
+            return this.service.salvar(cidadeRecuperada);
+        } catch (EstadoNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage(), e);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleta(@PathVariable Long id) {
-
-        try {
-            Cidade cidadeRecuperada = this.service.buscarPorId(id);
-            this.service.remover(cidadeRecuperada);
-            return ResponseEntity
-                    .noContent()
-                    .build();
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(e.getMessage());
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleta(@PathVariable Long id) {
+        this.service.remover(id);
     }
 
 }

@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
+import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,95 +26,54 @@ public class RestauranteController {
     private CadastroRestauranteService cadastroRestaurante;
 
     @GetMapping
-    public ResponseEntity<List<Restaurante>> lista() {
-        List<Restaurante> lista = this.cadastroRestaurante.listar();
-        return ResponseEntity.ok(lista);
+    public List<Restaurante> lista() {
+        return this.cadastroRestaurante.listar();
     }
 
     @PostMapping
-    public ResponseEntity<?> salva(@RequestBody Restaurante restauranteInput) {
-
-        try {
-
-            Restaurante restauranteSalvo = this.cadastroRestaurante.salvar(restauranteInput);
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(restauranteSalvo);
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(e.getMessage());
-        }
+    @ResponseStatus(HttpStatus.CREATED)
+    public Restaurante salva(@RequestBody Restaurante restauranteInput) {
+        return this.cadastroRestaurante.salvar(restauranteInput);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Restaurante> buscaPorId(@PathVariable Long id) {
-
+    public Restaurante buscaPorId(@PathVariable Long id) {
         try {
-            Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
-            return ResponseEntity.ok(restauranteRecuperado);
+            return this.cadastroRestaurante.buscaPorId(id);
         } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity.notFound().build();
+            throw new NegocioException(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualiza(@PathVariable Long id, @RequestBody Restaurante restauranteInput) {
+    public Restaurante atualiza(@PathVariable Long id, @RequestBody Restaurante restauranteInput) {
 
-        Restaurante restauranteRecuperado = null;
-        try {
-            restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity.notFound().build();
-        }
+        Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
+
+        BeanUtils.copyProperties(restauranteInput, restauranteRecuperado,
+                "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
 
         try {
-
-            BeanUtils.copyProperties(restauranteInput, restauranteRecuperado,
-                    "id",
-                    "formasPagamento",
-                    "endereco");
-            restauranteRecuperado = this.cadastroRestaurante.salvar(restauranteRecuperado);
-            return ResponseEntity.ok(restauranteRecuperado);
+            return this.cadastroRestaurante.salvar(restauranteRecuperado);
         } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(e.getMessage());
+            throw new NegocioException(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> remove(@PathVariable Long id) {
-        try {
-            Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
-
-            if (restauranteRecuperado == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            this.cadastroRestaurante.remover(restauranteRecuperado);
-            return ResponseEntity.noContent().build();
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .build();
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remove(@PathVariable Long id) {
+        this.cadastroRestaurante.remover(id);
     }
 
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> atualizaParcial(@PathVariable Long id, @RequestBody Map<String, Object> campos) {
+    public Restaurante atualizaParcial(@PathVariable Long id, @RequestBody Map<String, Object> campos) {
 
         Restaurante restauranteAtual = this.cadastroRestaurante.buscaPorId(id);
 
-        if (restauranteAtual == null) {
-            return ResponseEntity.notFound().build();
-        }
         merge(campos, restauranteAtual);
+
         return atualiza(id, restauranteAtual);
     }
 
@@ -125,7 +85,7 @@ public class RestauranteController {
             Field field = ReflectionUtils.findField(Restaurante.class, campo);
             field.setAccessible(true);
 
-            System.out.println(campo +" = "+valor);
+            System.out.println(campo + " = " + valor);
 
             Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
 

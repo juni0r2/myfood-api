@@ -1,6 +1,10 @@
 package br.com.myfood.myfoodapi.domain.exception;
 
-public class EntidadeEmUsoException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.CONFLICT) //reason="Entidade em uso")
+public class EntidadeEmUsoException extends NegocioException {
     public EntidadeEmUsoException(String mensagem) {
         super(mensagem);
     }
