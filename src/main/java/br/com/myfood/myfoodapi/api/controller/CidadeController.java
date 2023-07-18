@@ -1,9 +1,8 @@
 package br.com.myfood.myfoodapi.api.controller;
 
 import java.util.List;
-import java.util.Map;
 
-import br.com.myfood.myfoodapi.domain.exception.EstadoNaoEncontradaException;
+import br.com.myfood.myfoodapi.domain.exception.EstadoNaoEncontradoException;
 import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.model.Cidade;
 import br.com.myfood.myfoodapi.domain.service.CadastroCidadeService;
 
@@ -38,7 +36,7 @@ public class CidadeController {
     public Cidade adiciona(@RequestBody Cidade cozinhaInput) {
         try {
             return this.service.salvar(cozinhaInput);
-        } catch (EstadoNaoEncontradaException e) {
+        } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage(), e);
         }
     }
@@ -46,12 +44,12 @@ public class CidadeController {
     @PutMapping("/{id}")
     public Cidade atualiza(@PathVariable Long id, @RequestBody Cidade cozinha) {
 
-        Cidade cidadeRecuperada = this.service.buscarPorId(id);
-
-        BeanUtils.copyProperties(cozinha, cidadeRecuperada, "id");
         try {
+            Cidade cidadeRecuperada = this.service.buscarPorId(id);
+
+            BeanUtils.copyProperties(cozinha, cidadeRecuperada, "id");
             return this.service.salvar(cidadeRecuperada);
-        } catch (EstadoNaoEncontradaException e) {
+        } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage(), e);
         }
     }
