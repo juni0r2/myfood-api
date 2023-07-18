@@ -1,7 +1,10 @@
 package br.com.myfood.myfoodapi.api.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.myfood.myfoodapi.api.exceptionhandler.Problema;
+import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.exception.EstadoNaoEncontradoException;
 import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import org.springframework.beans.BeanUtils;
@@ -58,6 +61,26 @@ public class CidadeController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleta(@PathVariable Long id) {
         this.service.remover(id);
+    }
+
+    @ExceptionHandler(EntidadeNaoEncontradaException.class)
+    public ResponseEntity<?> tratarEntidadeNaoEncontradaException(EntidadeNaoEncontradaException e) {
+
+        Problema problema = Problema.builder()
+                .dataHora(LocalDateTime.now())
+                .mensagem(e.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problema);
+    }
+
+    @ExceptionHandler(NegocioException.class)
+    public ResponseEntity<?> trataNegocioException(NegocioException e) {
+        Problema problema = Problema.builder()
+                .dataHora(LocalDateTime.now())
+                .mensagem(e.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problema);
     }
 
 }
