@@ -1,8 +1,7 @@
 package br.com.myfood.myfoodapi.domain.service;
 
 import br.com.myfood.myfoodapi.domain.exception.EntidadeEmUsoException;
-import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
-import br.com.myfood.myfoodapi.domain.exception.EstadoNaoEncontradaException;
+import br.com.myfood.myfoodapi.domain.exception.EstadoNaoEncontradoException;
 import br.com.myfood.myfoodapi.domain.model.Estado;
 import br.com.myfood.myfoodapi.domain.repository.EstadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,28 +16,28 @@ public class CadastroEstadoService {
 
     public static final String MSG_ESTADO_EM_USO = "Estado de código %d não pode ser removido, pois está em uso";
     @Autowired
-    private EstadoRepository repository;
+    private EstadoRepository estadoRepository;
 
     public List<Estado> listar() {
-        return this.repository.findAll();
+        return this.estadoRepository.findAll();
     }
 
     public Estado buscaPorId(Long id) {
-        return this.repository
+        return this.estadoRepository
         .findById(id)
-        .orElseThrow(() -> new EstadoNaoEncontradaException(id));
+        .orElseThrow(() -> new EstadoNaoEncontradoException(id));
     }
 
     public Estado salva(Estado estado){
-        return this.repository.save(estado);
+        return this.estadoRepository.save(estado);
     }
 
     public void exclui(Long id) {
         try {
             Estado estado = this.buscaPorId(id);
-            this.repository.delete(estado);
+            this.estadoRepository.delete(estado);
         } catch (EmptyResultDataAccessException e) {
-            throw new EstadoNaoEncontradaException(id);
+            throw new EstadoNaoEncontradoException(id);
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(String.format(MSG_ESTADO_EM_USO,id));
         }

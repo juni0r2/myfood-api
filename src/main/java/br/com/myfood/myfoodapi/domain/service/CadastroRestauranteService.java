@@ -1,19 +1,17 @@
 package br.com.myfood.myfoodapi.domain.service;
 
-import java.util.List;
-import java.util.Optional;
-
 import br.com.myfood.myfoodapi.domain.exception.EntidadeEmUsoException;
+import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
+import br.com.myfood.myfoodapi.domain.exception.RestauranteNaoEncontradoException;
+import br.com.myfood.myfoodapi.domain.model.Cozinha;
+import br.com.myfood.myfoodapi.domain.model.Restaurante;
+import br.com.myfood.myfoodapi.domain.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
-import br.com.myfood.myfoodapi.domain.model.Cozinha;
-import br.com.myfood.myfoodapi.domain.model.Restaurante;
-import br.com.myfood.myfoodapi.domain.repository.CozinhaRepository;
-import br.com.myfood.myfoodapi.domain.repository.RestauranteRepository;
+import java.util.List;
 
 @Service
 public class CadastroRestauranteService {
@@ -22,13 +20,13 @@ public class CadastroRestauranteService {
     public static final String MSG_RESTAURANTE_EM_USO = "Restaurante de código %d não pode ser removido, pois está em uso";
     
     @Autowired
-    private RestauranteRepository repository;
+    private RestauranteRepository restauranteRepository;
 
     @Autowired
     private CadastroCozinhaService cozinhaService;
 
     public List<Restaurante> listar() {
-        List<Restaurante> lista = this.repository.findAll();
+        List<Restaurante> lista = this.restauranteRepository.findAll();
         lista.get(0).getCozinha().getNome();
         return lista;
     }
@@ -39,12 +37,12 @@ public class CadastroRestauranteService {
         Cozinha cozinha = this.cozinhaService.buscaPorId(idCozinha);
         restaurante.setCozinha(cozinha);
 
-        return this.repository.save(restaurante);
+        return this.restauranteRepository.save(restaurante);
     }
 
     public Restaurante buscaPorId(Long id) {
-        return this.repository.findById(id)
-            .orElseThrow(() -> new EntidadeNaoEncontradaException(
+        return this.restauranteRepository.findById(id)
+            .orElseThrow(() -> new RestauranteNaoEncontradoException(
                     String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id)));
     }
 
@@ -52,9 +50,9 @@ public class CadastroRestauranteService {
 
         try {
             Restaurante restaurante = this.buscaPorId(id);
-            this.repository.delete(restaurante);
+            this.restauranteRepository.delete(restaurante);
         } catch (EmptyResultDataAccessException e) {
-            throw new EntidadeNaoEncontradaException(String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id));
+            throw new RestauranteNaoEncontradoException(String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id));
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(String.format(MSG_RESTAURANTE_EM_USO,id));
         }
