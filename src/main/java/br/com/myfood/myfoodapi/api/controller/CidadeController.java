@@ -1,10 +1,7 @@
 package br.com.myfood.myfoodapi.api.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-import br.com.myfood.myfoodapi.api.exceptionhandler.Problema;
-import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.exception.EstadoNaoEncontradoException;
 import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import org.springframework.beans.BeanUtils;

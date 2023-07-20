@@ -17,8 +17,15 @@ import java.time.LocalDateTime;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
-    public ResponseEntity<?> tratarEntidadeNaoEncontradaException(EntidadeNaoEncontradaException e, WebRequest webRequest) {
-        return this.handleExceptionInternal(e, e.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, webRequest);
+    public ResponseEntity<?> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException e, WebRequest webRequest) {
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ProblemType problemType = ProblemType.ENTIDADE_NAO_ENCONTRADA;
+        String detail = e.getMessage();
+
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return this.handleExceptionInternal(e, problem, new HttpHeaders(), HttpStatus.NOT_FOUND, webRequest);
     }
 
     @ExceptionHandler(NegocioException.class)
@@ -37,17 +44,26 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                                              HttpStatus status, WebRequest request) {
 
         if (body == null) {
-            body = Problema.builder()
-                    .dataHora(LocalDateTime.now())
-                    .mensagem(status.getReasonPhrase())
+            body = Problem.builder()
+                    .status(status.value())
+                    .detail(ex.getMessage())
                     .build();
         } else if (body instanceof String) {
-            body = Problema.builder()
-                    .dataHora(LocalDateTime.now())
-                    .mensagem((String) body)
+            body = Problem.builder()
+                    .status(status.value())
+                    .detail(ex.getMessage())
                     .build();
         }
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
+
+    private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail) {
+        return Problem.builder()
+                .status(status.value())
+                .type(problemType.getUri())
+                .title(problemType.getTitle())
+                .detail(detail);
+    }
+
 }
