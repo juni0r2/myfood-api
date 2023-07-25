@@ -4,6 +4,7 @@ import br.com.myfood.myfoodapi.domain.exception.EntidadeEmUsoException;
 import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             return this.handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, webRequest);
         }
 
+        if (rootCause instanceof PropertyBindingException) {
+            return this.handlePropertyBindingException((PropertyBindingException) rootCause, headers, status, webRequest);
+        }
+
         ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
         String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe.";
 
@@ -37,8 +42,24 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return this.handleExceptionInternal(e, problem, new HttpHeaders(), status, webRequest);
     }
 
-    public ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException e,HttpHeaders headers, HttpStatus status,
-                                                          WebRequest webRequest) {
+    private ResponseEntity<Object> handlePropertyBindingException(PropertyBindingException e, HttpHeaders headers,
+                                                                  HttpStatus status, WebRequest webRequest) {
+
+        String path = e.getPath().stream()
+                .map(ref -> ref.getFieldName())
+                .collect(Collectors.joining("."));
+
+        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+        String detail = String.format("A propriedade '%s' não existe. "
+                + "Corrija ou remova essa propriedade e tente novamente.", path);
+
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return this.handleExceptionInternal(e, problem, new HttpHeaders(), status, webRequest);
+    }
+
+    private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException e, HttpHeaders headers, HttpStatus status,
+                                                               WebRequest webRequest) {
 
         String path = e.getPath().stream()
                 .map(ref -> ref.getFieldName())
@@ -50,7 +71,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         Problem problem = createProblemBuilder(status, problemType, detail).build();
 
-        return this.handleExceptionInternal(e, problem, new HttpHeaders(), HttpStatus.NOT_FOUND, webRequest);
+        return this.handleExceptionInternal(e, problem, new HttpHeaders(), status, webRequest);
     }
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
