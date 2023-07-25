@@ -38,11 +38,7 @@ public class RestauranteController {
 
     @GetMapping("/{id}")
     public Restaurante buscaPorId(@PathVariable Long id) {
-        try {
-            return this.cadastroRestaurante.buscaPorId(id);
-        } catch (EntidadeNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage());
-        }
+        return this.cadastroRestaurante.buscaPorId(id);
     }
 
     @PutMapping("/{id}")
