@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.stream.Collectors;
@@ -54,15 +55,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleTypeMismatch(e, headers, status, request);
     }
 
-    private ResponseEntity<Object> MethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpHeaders headers,
-                                                                       HttpStatus status, WebRequest request) {
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException e, HttpHeaders headers,
+                                                                   HttpStatus status, WebRequest webRequest) {
 
-        ProblemType problemType = ProblemType.PARAMETRO_INVALIDO;
-        String detail = String.format("O parametro de URL '%s' recebeu o valor '%s', que é de um tipo invalido." +
-                " Corrija e informe um valor compativel com o tipo '%s'", e.getName(), e.getValue(), e.getRequiredType().getSimpleName());
-
+        ProblemType problemType = ProblemType.RECURSO_NAO_ENCONTRADO;
+        String detail = String.format("O recurso '%s', que você tentou acessar é inexistente", e.getRequestURL());
         Problem problem = createProblemBuilder(status, problemType, detail).build();
-        return super.handleExceptionInternal(e, problem, headers, status, request);
+        return this.handleExceptionInternal(e, problem, headers, status, webRequest);
     }
 
     private ResponseEntity<Object> handlePropertyBindingException(PropertyBindingException e, HttpHeaders headers,
@@ -78,8 +78,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         Problem problem = createProblemBuilder(status, problemType, detail).build();
 
-        return this.handleExceptionInternal(e, problem, new HttpHeaders(), status, webRequest);
+        return this.handleExceptionInternal(e, problem, headers, status, webRequest);
     }
+
+
+
+    private ResponseEntity<Object> MethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpHeaders headers,
+                                                                       HttpStatus status, WebRequest request) {
+
+        ProblemType problemType = ProblemType.PARAMETRO_INVALIDO;
+        String detail = String.format("O parametro de URL '%s' recebeu o valor '%s', que é de um tipo invalido." +
+                " Corrija e informe um valor compativel com o tipo '%s'", e.getName(), e.getValue(), e.getRequiredType().getSimpleName());
+
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+        return super.handleExceptionInternal(e, problem, headers, status, request);
+    }
+
+
 
     private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException e, HttpHeaders headers, HttpStatus status,
                                                                 WebRequest webRequest) {
@@ -94,7 +109,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         Problem problem = createProblemBuilder(status, problemType, detail).build();
 
-        return this.handleExceptionInternal(e, problem, new HttpHeaders(), status, webRequest);
+        return this.handleExceptionInternal(e, problem, headers, status, webRequest);
     }
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
