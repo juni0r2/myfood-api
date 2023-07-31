@@ -145,7 +145,20 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         Problem problem = createProblemBuilder(status, problemType, detail).build();
 
-        return this.handleExceptionInternal(e, problem, new HttpHeaders(), HttpStatus.CONFLICT, webRequest);
+        return this.handleExceptionInternal(e, problem, new HttpHeaders(), status, webRequest);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleErroDeSistemaException(Exception e, WebRequest webRequest) {
+
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        ProblemType problemType = ProblemType.ERRO_DE_SISTEMA;
+        String detail = "Ocorreu um erro interno inesperado no sistema. Tente novamente e se o problema persistir," +
+                "entre em contato com o administrador do sistema.";
+
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return this.handleExceptionInternal(e, problem, new HttpHeaders(), status, webRequest);
     }
 
     @Override
