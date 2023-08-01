@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -48,6 +49,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         return this.handleExceptionInternal(e, problem, new HttpHeaders(), status, webRequest);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, HttpHeaders headers,
+                                                                  HttpStatus status, WebRequest request) {
+        ProblemType problemType = ProblemType.DADOS_INVALIDOS;
+        String detail = String.format("Um ou mais estão inválidos. Faça o preenchimento correto e tente novamente.");
+
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .useMessage(detail)
+                .build();
+
+        return this.handleExceptionInternal(e,problem, headers, status, request);
     }
 
     @Override
@@ -185,19 +199,22 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status,
+                                                             WebRequest request) {
 
         if (body == null) {
             body = Problem.builder()
                     .timestamp(LocalDateTime.now())
                     .status(status.value())
                     .detail(status.getReasonPhrase())
+                    .useMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
                     .build();
         } else if (body instanceof String) {
             body = Problem.builder()
                     .timestamp(LocalDateTime.now())
                     .status(status.value())
                     .detail(ex.getMessage())
+                    .useMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
                     .build();
         }
 

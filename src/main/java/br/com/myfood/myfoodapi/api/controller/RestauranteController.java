@@ -21,6 +21,7 @@ import br.com.myfood.myfoodapi.domain.model.Restaurante;
 import br.com.myfood.myfoodapi.domain.service.CadastroRestauranteService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -36,7 +37,7 @@ public class RestauranteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurante salva(@RequestBody Restaurante restauranteInput) {
+    public Restaurante salva(@RequestBody @Valid Restaurante restauranteInput) {
         return this.cadastroRestaurante.salvar(restauranteInput);
     }
 
