@@ -1,7 +1,10 @@
 package br.com.myfood.myfoodapi.domain.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
+import br.com.myfood.myfoodapi.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,6 +18,7 @@ import java.util.List;
 @Entity
 public class Cozinha {
 
+    @NotNull(groups = Groups.CozinhaId.class)
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +26,7 @@ public class Cozinha {
 
     // @JsonIgnore Caso queria ignorar o parammetro na representação
     // @JsonProperty("titulo") Caso queria mudar nome do parametro na representção
+    @NotBlank
     @Column(name = "nome",nullable = false)
     private String nome;
 

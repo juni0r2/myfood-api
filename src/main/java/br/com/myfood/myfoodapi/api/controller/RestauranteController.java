@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
+import br.com.myfood.myfoodapi.Groups;
 import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
@@ -21,6 +23,7 @@ import br.com.myfood.myfoodapi.domain.model.Restaurante;
 import br.com.myfood.myfoodapi.domain.service.CadastroRestauranteService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -36,7 +39,7 @@ public class RestauranteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurante salva(@RequestBody Restaurante restauranteInput) {
+    public Restaurante salva(@RequestBody @Valid Restaurante restauranteInput) {
         return this.cadastroRestaurante.salvar(restauranteInput);
     }
 
@@ -50,7 +53,7 @@ public class RestauranteController {
     }
 
     @PutMapping("/{id}")
-    public Restaurante atualiza(@PathVariable Long id, @RequestBody Restaurante restauranteInput) {
+    public Restaurante atualiza(@PathVariable Long id, @RequestBody @Valid Restaurante restauranteInput) {
 
         Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
 

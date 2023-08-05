@@ -22,6 +22,8 @@ import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.model.Cozinha;
 import br.com.myfood.myfoodapi.domain.service.CadastroCozinhaService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/cozinhas")
 public class CozinhaController {
@@ -41,12 +43,12 @@ public class CozinhaController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public Cozinha adiciona(@RequestBody Cozinha cozinhaInput) {
+    public Cozinha adiciona(@RequestBody @Valid Cozinha cozinhaInput) {
         return this.service.salvar(cozinhaInput);
     }
 
     @PutMapping("/{id}")
-    public Cozinha atualiza(@PathVariable Long id, @RequestBody Cozinha cozinha) {
+    public Cozinha atualiza(@PathVariable Long id, @RequestBody @Valid Cozinha cozinha) {
 
         Cozinha cozinhaAtual = this.service.buscaPorId(id);
 
