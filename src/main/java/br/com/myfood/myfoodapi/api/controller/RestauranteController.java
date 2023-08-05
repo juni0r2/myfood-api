@@ -53,7 +53,7 @@ public class RestauranteController {
     }
 
     @PutMapping("/{id}")
-    public Restaurante atualiza(@PathVariable Long id, @RequestBody Restaurante restauranteInput) {
+    public Restaurante atualiza(@PathVariable Long id, @RequestBody @Valid Restaurante restauranteInput) {
 
         Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
 

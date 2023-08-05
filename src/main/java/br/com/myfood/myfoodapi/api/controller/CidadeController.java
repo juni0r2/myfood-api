@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import br.com.myfood.myfoodapi.domain.model.Cidade;
 import br.com.myfood.myfoodapi.domain.service.CadastroCidadeService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/cidades")
 public class CidadeController {
@@ -33,7 +35,7 @@ public class CidadeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cidade adiciona(@RequestBody Cidade cozinhaInput) {
+    public Cidade adiciona(@RequestBody @Valid Cidade cozinhaInput) {
         try {
             return this.service.salvar(cozinhaInput);
         } catch (EstadoNaoEncontradoException e) {
@@ -42,7 +44,7 @@ public class CidadeController {
     }
 
     @PutMapping("/{id}")
-    public Cidade atualiza(@PathVariable Long id, @RequestBody Cidade cozinha) {
+    public Cidade atualiza(@PathVariable Long id, @RequestBody @Valid Cidade cozinha) {
 
         try {
             Cidade cidadeRecuperada = this.service.buscarPorId(id);

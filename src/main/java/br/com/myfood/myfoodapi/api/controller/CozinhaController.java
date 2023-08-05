@@ -48,7 +48,7 @@ public class CozinhaController {
     }
 
     @PutMapping("/{id}")
-    public Cozinha atualiza(@PathVariable Long id, @RequestBody Cozinha cozinha) {
+    public Cozinha atualiza(@PathVariable Long id, @RequestBody @Valid Cozinha cozinha) {
 
         Cozinha cozinhaAtual = this.service.buscaPorId(id);
 

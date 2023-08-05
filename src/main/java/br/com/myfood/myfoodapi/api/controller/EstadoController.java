@@ -13,6 +13,8 @@ import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.model.Estado;
 import br.com.myfood.myfoodapi.domain.service.CadastroEstadoService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/estados")
 public class EstadoController {
@@ -32,12 +34,12 @@ public class EstadoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Estado adiciona(@RequestBody Estado estadoInput) {
+    public Estado adiciona(@RequestBody @Valid Estado estadoInput) {
         return this.service.salva(estadoInput);
     }
 
     @PutMapping("/{id}")
-    public Estado atualiza(@PathVariable Long id, @RequestBody Estado estadoInput) {
+    public Estado atualiza(@PathVariable Long id, @RequestBody @Valid Estado estadoInput) {
 
         Estado estado = this.service.buscaPorId(id);
 
