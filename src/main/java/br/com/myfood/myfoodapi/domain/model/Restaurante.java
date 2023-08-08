@@ -33,6 +33,7 @@ public class Restaurante {
     @Column(nullable = false)
     private String nome;
 
+    @NotNull
     @Column(name = "taxa_frete", nullable = false)
     @PositiveOrZero
     private BigDecimal taxaFrete;
