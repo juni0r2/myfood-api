@@ -1,4 +1,4 @@
-package br.com.myfood.myfoodapi;
+package br.com.myfood.myfoodapi.core.validation;
 
 public interface Groups {
 
