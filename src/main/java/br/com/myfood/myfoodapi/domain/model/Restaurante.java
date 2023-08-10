@@ -1,6 +1,7 @@
 package br.com.myfood.myfoodapi.domain.model;
 
 import br.com.myfood.myfoodapi.core.validation.Groups;
+import br.com.myfood.myfoodapi.core.validation.TaxaFrete;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,8 +35,8 @@ public class Restaurante {
     private String nome;
 
     @NotNull
+    @TaxaFrete
     @Column(name = "taxa_frete", nullable = false)
-    @PositiveOrZero
     private BigDecimal taxaFrete;
 
 //    @JsonIgnoreProperties({"hibernateLazyInitializer"})
