@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import br.com.myfood.myfoodapi.Groups;
+import br.com.myfood.myfoodapi.core.validation.Groups;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 public class Estado {
 
-    @NotNull(groups = Groups.CidadeId.class)
+    @NotNull(groups = Groups.EstadoId.class)
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

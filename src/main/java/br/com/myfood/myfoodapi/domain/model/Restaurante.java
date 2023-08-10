@@ -1,6 +1,6 @@
 package br.com.myfood.myfoodapi.domain.model;
 
-import br.com.myfood.myfoodapi.Groups;
+import br.com.myfood.myfoodapi.core.validation.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,6 +33,7 @@ public class Restaurante {
     @Column(nullable = false)
     private String nome;
 
+    @NotNull
     @Column(name = "taxa_frete", nullable = false)
     @PositiveOrZero
     private BigDecimal taxaFrete;

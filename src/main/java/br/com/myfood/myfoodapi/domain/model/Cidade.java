@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
 
-import br.com.myfood.myfoodapi.Groups;
+import br.com.myfood.myfoodapi.core.validation.Groups;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -29,7 +29,7 @@ public class Cidade {
 
 
     @Valid
-    @ConvertGroup(from = Default.class, to = Groups.CidadeId.class)
+    @ConvertGroup(from = Default.class, to = Groups.EstadoId.class)
     @NotNull
     @ManyToOne
     private Estado estado;
