@@ -1,6 +1,7 @@
 package br.com.myfood.myfoodapi.domain.model;
 
 import br.com.myfood.myfoodapi.core.validation.Groups;
+import br.com.myfood.myfoodapi.core.validation.Multiplo;
 import br.com.myfood.myfoodapi.core.validation.TaxaFrete;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -35,7 +36,7 @@ public class Restaurante {
     private String nome;
 
     @NotNull
-    @TaxaFrete
+    @Multiplo(numero = 5)
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
