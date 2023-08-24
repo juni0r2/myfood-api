@@ -6,9 +6,9 @@ import br.com.myfood.myfoodapi.domain.model.Cozinha;
 import br.com.myfood.myfoodapi.domain.repository.CozinhaRepository;
 import br.com.myfood.myfoodapi.domain.service.CadastroCozinhaService;
 import br.com.myfood.myfoodapi.util.DatabaseCleaner;
+import br.com.myfood.myfoodapi.util.ResourceUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.flywaydb.core.Flyway;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource("/application-test.properties")
 class CadastroCozinhaIT {
 
+	public static final int COZINHA_INEXISTENTE = 3;
 	@Autowired
 	CadastroCozinhaService cozinhaService;
 
@@ -38,15 +39,22 @@ class CadastroCozinhaIT {
 	@LocalServerPort
 	private int port;
 
+	private Cozinha cozinhaBrasileira;
+	private int quantidadeCozinhasCadastradas;
+
+	private String jsonCorretoCozinhaCaipira;
+
 	@BeforeEach
 	public void setUp(){
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-		RestAssured.port = port;
+		RestAssured.port = this.port;
 		RestAssured.basePath="/myfood-api/cozinhas";
 
 		this.databaseCleaner.clearTables();
 
 		preparaDados();
+
+		this.jsonCorretoCozinhaCaipira = ResourceUtils.getContentFromResource("/json/correto/cozinha-caipira.json");
 	}
 
 	@Test
@@ -97,42 +105,67 @@ class CadastroCozinhaIT {
 	public void deveRetornarStatus200_QuandoConsultarCozinhas(){
 		RestAssured.given()
 				.accept(ContentType.JSON)
-				.when()
+			.when()
 				.get()
-				.then()
+			.then()
 				.statusCode(HttpStatus.OK.value());
 	}
 
 	@Test
-	public void deveConter4Cozinhas_QuandoConsultarCozinhas(){
+	public void deveConterQuantidadeCozinhas_QuandoConsultarCozinhas(){
 		RestAssured.given()
 				.accept(ContentType.JSON)
-				.when()
+			.when()
 				.get()
-				.then()
-				.body("", Matchers.hasSize(2))
-				.body("nome", Matchers.hasItems("Indiana", "Brasileira"));
+			.then()
+				.body("", Matchers.hasSize(quantidadeCozinhasCadastradas));
 	}
 
 	@Test
 	public void deveRetornarStatus201_QuandoCadastrarCozinha() {
 		RestAssured.given()
-				.body("{ \"nome\" : \"Caipira\" }")
+				.body(this.jsonCorretoCozinhaCaipira)
 				.accept(ContentType.JSON)
 				.contentType(ContentType.JSON)
-				.when()
+			.when()
 				.post()
-				.then()
+			.then()
 				.statusCode(HttpStatus.CREATED.value());
+	}
+
+	@Test
+	public void deveRetornarRespostaEStatusCorretos_QuandoConsultarCozinhaExistente() {
+		RestAssured.given()
+				.pathParams("cozinhaId", this.cozinhaBrasileira.getId())
+				.accept(ContentType.JSON)
+			.when()
+				.get("/{cozinhaId}")
+			.then()
+				.statusCode(HttpStatus.OK.value())
+				.body("nome", Matchers.equalTo(this.cozinhaBrasileira.getNome()));
+	}
+
+	@Test
+	public void deveRetornarStatus404_QuandoConsultarCozinhaExistente() {
+		RestAssured.given()
+				.pathParams("cozinhaId", COZINHA_INEXISTENTE)
+				.accept(ContentType.JSON)
+			.when()
+				.get("/{cozinhaId}")
+			.then()
+				.statusCode(HttpStatus.NOT_FOUND.value());
 	}
 
 	private void preparaDados() {
 		var cozinha1 = new Cozinha();
 		cozinha1.setNome("Indiana");
 		this.cozinhaRepository.save(cozinha1);
-		var cozinha2 = new Cozinha();
-		cozinha2.setNome("Brasileira");
-		this.cozinhaRepository.save(cozinha2);
+
+		this.cozinhaBrasileira = new Cozinha();
+		cozinhaBrasileira.setNome("Brasileira");
+		this.cozinhaRepository.save(cozinhaBrasileira);
+
+		this.quantidadeCozinhasCadastradas = (int) this.cozinhaRepository.count();
 	}
 
 }
