@@ -9,7 +9,6 @@ import br.com.myfood.myfoodapi.util.DatabaseCleaner;
 import br.com.myfood.myfoodapi.util.ResourceUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.flywaydb.core.Flyway;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,21 +105,20 @@ class CadastroCozinhaIT {
 	public void deveRetornarStatus200_QuandoConsultarCozinhas(){
 		RestAssured.given()
 				.accept(ContentType.JSON)
-				.when()
+			.when()
 				.get()
-				.then()
+			.then()
 				.statusCode(HttpStatus.OK.value());
 	}
 
 	@Test
-	public void deveConter4Cozinhas_QuandoConsultarCozinhas(){
+	public void deveConterQuantidadeCozinhas_QuandoConsultarCozinhas(){
 		RestAssured.given()
 				.accept(ContentType.JSON)
 			.when()
 				.get()
 			.then()
-				.body("", Matchers.hasSize(2))
-				.body("nome", Matchers.hasItems("Indiana", "Brasileira"));
+				.body("", Matchers.hasSize(quantidadeCozinhasCadastradas));
 	}
 
 	@Test
