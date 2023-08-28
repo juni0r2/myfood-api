@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,10 +29,12 @@ public class CadastroEstadoService {
         .orElseThrow(() -> new EstadoNaoEncontradoException(id));
     }
 
+    @Transactional
     public Estado salva(Estado estado){
         return this.estadoRepository.save(estado);
     }
 
+    @Transactional
     public void exclui(Long id) {
         try {
             Estado estado = this.buscaPorId(id);
