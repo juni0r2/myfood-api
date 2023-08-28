@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.model.Cozinha;
 import br.com.myfood.myfoodapi.domain.repository.CozinhaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CadastroCozinhaService {
@@ -25,6 +26,7 @@ public class CadastroCozinhaService {
         return this.cozinhaRepository.findAll();
     }
 
+    @Transactional
     public Cozinha salvar(Cozinha cozinha) {
         return this.cozinhaRepository.save(cozinha);
     }
@@ -35,6 +37,7 @@ public class CadastroCozinhaService {
                     String.format(MSG_COZINHA_NAO_ENCONTRADA, id)));
     }
 
+    @Transactional
     public void remover(Long idCozinha) {
         try {
             this.cozinhaRepository.deleteById(idCozinha);
