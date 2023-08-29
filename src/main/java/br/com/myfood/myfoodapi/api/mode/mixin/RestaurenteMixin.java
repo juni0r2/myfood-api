@@ -19,10 +19,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RestaurenteMixin {
+public abstract class RestaurenteMixin {
 
     //    @JsonIgnoreProperties({"hibernateLazyInitializer"})
-//    @JsonIgnore
+    //    @JsonIgnore
     @JsonIgnoreProperties(value = "nome", allowGetters = true)
     private Cozinha cozinha;
 
@@ -36,8 +36,8 @@ public class RestaurenteMixin {
     private Endereco endereco;
 
     @JsonIgnore
-    private List<Produto> produtos = new ArrayList<>();
+    private List<Produto> produtos;
 
     @JsonIgnore
-    private List<FormaPagamento> formasPagamento = new ArrayList<>();
+    private List<FormaPagamento> formasPagamento;
 }
