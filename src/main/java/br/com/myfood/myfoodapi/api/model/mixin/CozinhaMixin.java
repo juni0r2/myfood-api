@@ -1,4 +1,4 @@
-package br.com.myfood.myfoodapi.api.mode.mixin;
+package br.com.myfood.myfoodapi.api.model.mixin;
 
 import br.com.myfood.myfoodapi.domain.model.Restaurante;
 import com.fasterxml.jackson.annotation.JsonIgnore;
