@@ -7,6 +7,7 @@ import br.com.myfood.myfoodapi.domain.model.Produto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public abstract class RestaurenteMixin {
@@ -16,11 +17,9 @@ public abstract class RestaurenteMixin {
     @JsonIgnoreProperties(value = "nome", allowGetters = true)
     private Cozinha cozinha;
 
-    @JsonIgnore
-    private LocalDateTime dataCadastro;
+    private OffsetDateTime dataCadastro;
 
-    @JsonIgnore
-    private LocalDateTime dataAtualizacao;
+    private OffsetDateTime dataAtualizacao;
 
     @JsonIgnore
     private Endereco endereco;
