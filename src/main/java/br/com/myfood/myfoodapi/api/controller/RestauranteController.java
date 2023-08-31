@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 
 import br.com.myfood.myfoodapi.api.model.CozinhaModel;
 import br.com.myfood.myfoodapi.api.model.RestauranteModel;
+import br.com.myfood.myfoodapi.api.model.input.RestauranteInput;
 import br.com.myfood.myfoodapi.domain.exception.NegocioException;
+import br.com.myfood.myfoodapi.domain.model.Cozinha;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -33,6 +35,10 @@ public class RestauranteController {
     @Autowired
     private CadastroRestauranteService cadastroRestaurante;
 
+    public RestauranteController(CadastroRestauranteService cadastroRestaurante) {
+        this.cadastroRestaurante = cadastroRestaurante;
+    }
+
     @GetMapping
     public List<RestauranteModel> lista() {
         return toCollectionModel(this.cadastroRestaurante.listar());
@@ -40,8 +46,9 @@ public class RestauranteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RestauranteModel salva(@RequestBody @Valid Restaurante restauranteInput) {
-        return toModel(this.cadastroRestaurante.salvar(restauranteInput));
+    public RestauranteModel salva(@RequestBody @Valid RestauranteInput restauranteInput) {
+        Restaurante restaurante = toObjectModel(restauranteInput);
+        return toModel(this.cadastroRestaurante.salvar(restaurante));
     }
 
     @GetMapping("/{id}")
@@ -52,11 +59,12 @@ public class RestauranteController {
     }
 
     @PutMapping("/{id}")
-    public RestauranteModel atualiza(@PathVariable Long id, @RequestBody @Valid Restaurante restauranteInput) {
+    public RestauranteModel atualiza(@PathVariable Long id, @RequestBody @Valid RestauranteInput restauranteInput) {
 
+        Restaurante restaurante = toObjectModel(restauranteInput);
         Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
 
-        BeanUtils.copyProperties(restauranteInput, restauranteRecuperado,
+        BeanUtils.copyProperties(restaurante, restauranteRecuperado,
                 "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
 
         try {
@@ -81,7 +89,7 @@ public class RestauranteController {
 
         merge(campos, restauranteAtual, request);
 
-        return atualiza(id, restauranteAtual);
+        return atualiza(id, null);
     }
 
     private static void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino, HttpServletRequest request) {
@@ -121,10 +129,22 @@ public class RestauranteController {
         return restauranteModel;
     }
 
-    public List<RestauranteModel> toCollectionModel(List<Restaurante> restaurantes) {
+    private List<RestauranteModel> toCollectionModel(List<Restaurante> restaurantes) {
         return restaurantes.stream()
                 .map(RestauranteController::toModel)
                 .collect(Collectors.toList());
     }
 
+    private Restaurante toObjectModel(RestauranteInput restauranteInput) {
+        Restaurante restaurante = new Restaurante();
+        restaurante.setNome(restauranteInput.getNome());
+        restaurante.setTaxaFrete(restauranteInput.getTaxaFrete());
+
+        Cozinha cozinha = new Cozinha();
+        cozinha.setId(restauranteInput.getCozinha().getId());
+
+        restaurante.setCozinha(cozinha);
+
+        return restaurante;
+    }
 }
