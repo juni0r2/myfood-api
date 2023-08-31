@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import br.com.myfood.myfoodapi.api.assembler.RestauranteInputDisassembler;
+import br.com.myfood.myfoodapi.api.assembler.RestauranteModelAssembler;
 import br.com.myfood.myfoodapi.api.model.CozinhaModel;
 import br.com.myfood.myfoodapi.api.model.RestauranteModel;
 import br.com.myfood.myfoodapi.api.model.input.RestauranteInput;
@@ -35,40 +37,42 @@ public class RestauranteController {
     @Autowired
     private CadastroRestauranteService cadastroRestaurante;
 
-    public RestauranteController(CadastroRestauranteService cadastroRestaurante) {
-        this.cadastroRestaurante = cadastroRestaurante;
-    }
+    @Autowired
+    private RestauranteModelAssembler restauranteModelAssembler;
+
+    @Autowired
+    private RestauranteInputDisassembler restauranteInputDisassembler;
 
     @GetMapping
     public List<RestauranteModel> lista() {
-        return toCollectionModel(this.cadastroRestaurante.listar());
+        return this.restauranteModelAssembler.toCollectionModel(this.cadastroRestaurante.listar());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RestauranteModel salva(@RequestBody @Valid RestauranteInput restauranteInput) {
-        Restaurante restaurante = toObjectModel(restauranteInput);
-        return toModel(this.cadastroRestaurante.salvar(restaurante));
+        Restaurante restaurante = this.restauranteInputDisassembler.toObjectModel(restauranteInput);
+        return this.restauranteModelAssembler.toModel(this.cadastroRestaurante.salvar(restaurante));
     }
 
     @GetMapping("/{id}")
     public RestauranteModel buscaPorId(@PathVariable Long id) {
         Restaurante restaurante = this.cadastroRestaurante.buscaPorId(id);
 
-        return toModel(restaurante);
+        return this.restauranteModelAssembler.toModel(restaurante);
     }
 
     @PutMapping("/{id}")
     public RestauranteModel atualiza(@PathVariable Long id, @RequestBody @Valid RestauranteInput restauranteInput) {
 
-        Restaurante restaurante = toObjectModel(restauranteInput);
+        Restaurante restaurante = this.restauranteInputDisassembler.toObjectModel(restauranteInput);
         Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
 
         BeanUtils.copyProperties(restaurante, restauranteRecuperado,
                 "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
 
         try {
-            return toModel(this.cadastroRestaurante.salvar(restauranteRecuperado));
+            return this.restauranteModelAssembler.toModel(this.cadastroRestaurante.salvar(restauranteRecuperado));
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
@@ -116,35 +120,4 @@ public class RestauranteController {
         }
     }
 
-    private static RestauranteModel toModel(Restaurante restaurante) {
-        CozinhaModel cozinhaModel = new CozinhaModel();
-        cozinhaModel.setId(restaurante.getCozinha().getId());
-        cozinhaModel.setNome(restaurante.getCozinha().getNome());
-
-        RestauranteModel restauranteModel = new RestauranteModel();
-        restauranteModel.setId(restaurante.getId());
-        restauranteModel.setNome(restaurante.getNome());
-        restauranteModel.setTaxaFrete(restaurante.getTaxaFrete());
-        restauranteModel.setCozinha(cozinhaModel);
-        return restauranteModel;
-    }
-
-    private List<RestauranteModel> toCollectionModel(List<Restaurante> restaurantes) {
-        return restaurantes.stream()
-                .map(RestauranteController::toModel)
-                .collect(Collectors.toList());
-    }
-
-    private Restaurante toObjectModel(RestauranteInput restauranteInput) {
-        Restaurante restaurante = new Restaurante();
-        restaurante.setNome(restauranteInput.getNome());
-        restaurante.setTaxaFrete(restauranteInput.getTaxaFrete());
-
-        Cozinha cozinha = new Cozinha();
-        cozinha.setId(restauranteInput.getCozinha().getId());
-
-        restaurante.setCozinha(cozinha);
-
-        return restaurante;
-    }
 }
