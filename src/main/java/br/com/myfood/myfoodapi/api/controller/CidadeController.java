@@ -2,6 +2,10 @@ package br.com.myfood.myfoodapi.api.controller;
 
 import java.util.List;
 
+import br.com.myfood.myfoodapi.api.assembler.CidadeInputDisassembler;
+import br.com.myfood.myfoodapi.api.assembler.CidadeModelAssembler;
+import br.com.myfood.myfoodapi.api.model.CidadeModel;
+import br.com.myfood.myfoodapi.api.model.input.CidadeInput;
 import br.com.myfood.myfoodapi.domain.exception.EstadoNaoEncontradoException;
 import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import org.springframework.beans.BeanUtils;
@@ -22,35 +26,41 @@ public class CidadeController {
     @Autowired
     private CadastroCidadeService service;
 
+    @Autowired
+    private CidadeModelAssembler cidadeModelAssembler;
+
+    @Autowired
+    private CidadeInputDisassembler cidadeInputDisassembler;
+
     @GetMapping
-    public ResponseEntity<List<Cidade>> listar() {
+    public ResponseEntity<List<CidadeModel>> listar() {
         List<Cidade> lista = this.service.listar();
-        return ResponseEntity.ok(lista);
+        return ResponseEntity.ok(this.cidadeModelAssembler.toCollectionModel(lista));
     }
 
     @GetMapping("/{id}")
-    public Cidade buscaPorId(@PathVariable Long id) {
-        return this.service.buscarPorId(id);
+    public CidadeModel buscaPorId(@PathVariable Long id) {
+        return this.cidadeModelAssembler.toModel(this.service.buscarPorId(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cidade adiciona(@RequestBody @Valid Cidade cozinhaInput) {
+    public CidadeModel adiciona(@RequestBody @Valid CidadeInput cidadeInput) {
         try {
-            return this.service.salvar(cozinhaInput);
+            Cidade cidade = this.cidadeInputDisassembler.toDomainObject(cidadeInput);
+            return this.cidadeModelAssembler.toModel(this.service.salvar(cidade));
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage(), e);
         }
     }
 
     @PutMapping("/{id}")
-    public Cidade atualiza(@PathVariable Long id, @RequestBody @Valid Cidade cozinha) {
+    public CidadeModel atualiza(@PathVariable Long id, @RequestBody @Valid CidadeInput cidadeInput) {
 
         try {
             Cidade cidadeRecuperada = this.service.buscarPorId(id);
-
-            BeanUtils.copyProperties(cozinha, cidadeRecuperada, "id");
-            return this.service.salvar(cidadeRecuperada);
+            this.cidadeInputDisassembler.copyToDomainObject(cidadeInput, cidadeRecuperada);
+            return this.cidadeModelAssembler.toModel(this.service.salvar(cidadeRecuperada));
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage(), e);
         }

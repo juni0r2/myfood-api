@@ -3,15 +3,12 @@ package br.com.myfood.myfoodapi.api.controller;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import br.com.myfood.myfoodapi.api.assembler.RestauranteInputDisassembler;
 import br.com.myfood.myfoodapi.api.assembler.RestauranteModelAssembler;
-import br.com.myfood.myfoodapi.api.model.CozinhaModel;
 import br.com.myfood.myfoodapi.api.model.RestauranteModel;
 import br.com.myfood.myfoodapi.api.model.input.RestauranteInput;
 import br.com.myfood.myfoodapi.domain.exception.NegocioException;
-import br.com.myfood.myfoodapi.domain.model.Cozinha;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -51,7 +48,7 @@ public class RestauranteController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RestauranteModel salva(@RequestBody @Valid RestauranteInput restauranteInput) {
-        Restaurante restaurante = this.restauranteInputDisassembler.toObjectModel(restauranteInput);
+        Restaurante restaurante = this.restauranteInputDisassembler.toDomainObject(restauranteInput);
         return this.restauranteModelAssembler.toModel(this.cadastroRestaurante.salvar(restaurante));
     }
 
@@ -65,13 +62,16 @@ public class RestauranteController {
     @PutMapping("/{id}")
     public RestauranteModel atualiza(@PathVariable Long id, @RequestBody @Valid RestauranteInput restauranteInput) {
 
-        Restaurante restaurante = this.restauranteInputDisassembler.toObjectModel(restauranteInput);
-        Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
-
-        BeanUtils.copyProperties(restaurante, restauranteRecuperado,
-                "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
-
         try {
+//            Restaurante restaurante = this.restauranteInputDisassembler.toDomainObject(restauranteInput);
+            Restaurante restauranteRecuperado = this.cadastroRestaurante.buscaPorId(id);
+
+            this.restauranteInputDisassembler.copyToDomainObject(restauranteInput, restauranteRecuperado);
+
+//            BeanUtils.copyProperties(restaurante, restauranteRecuperado,
+//                    "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
+
+
             return this.restauranteModelAssembler.toModel(this.cadastroRestaurante.salvar(restauranteRecuperado));
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
