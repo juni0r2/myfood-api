@@ -5,6 +5,7 @@ import java.util.List;
 import br.com.myfood.myfoodapi.api.assembler.EstadoInputDisassembler;
 import br.com.myfood.myfoodapi.api.assembler.EstadoModelAssembler;
 import br.com.myfood.myfoodapi.api.model.EstadoModel;
+import br.com.myfood.myfoodapi.api.model.input.EstadoInput;
 import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class EstadoController {
     }
 
     @PutMapping("/{id}")
-    public EstadoModel atualiza(@PathVariable Long id, @RequestBody @Valid Estado estadoInput) {
+    public EstadoModel atualiza(@PathVariable Long id, @RequestBody @Valid EstadoInput estadoInput) {
         try {
             Estado estado = this.service.buscaPorId(id);
             this.estadoInputDisassembler.copyToDomainObject(estadoInput, estado);

@@ -18,7 +18,7 @@ public class EstadoInputDisassembler {
         return this.modelMapper.map(estadoInput, Estado.class);
     }
 
-    public void copyToDomainObject(Estado estadoInput, Estado estado) {
+    public void copyToDomainObject(EstadoInput estadoInput, Estado estado) {
         this.modelMapper.map(estadoInput, estado);
     }
 }
