@@ -2,6 +2,10 @@ package br.com.myfood.myfoodapi.api.controller;
 
 import java.util.List;
 
+import br.com.myfood.myfoodapi.api.assembler.EstadoInputDisassembler;
+import br.com.myfood.myfoodapi.api.assembler.EstadoModelAssembler;
+import br.com.myfood.myfoodapi.api.model.EstadoModel;
+import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,30 +26,37 @@ public class EstadoController {
     @Autowired
     private CadastroEstadoService service;
 
+    @Autowired
+    private EstadoModelAssembler estadoModelAssembler;
+
+    @Autowired
+    private EstadoInputDisassembler estadoInputDisassembler;
+
     @GetMapping
-    public List<Estado> listar() {
-        return this.service.listar();
+    public List<EstadoModel> listar() {
+        return this.estadoModelAssembler.toCollectionModel(this.service.listar());
     }
 
     @GetMapping("/{id}")
-    public Estado buscarPorId(@PathVariable Long id) {
-        return this.service.buscaPorId(id);
+    public EstadoModel buscarPorId(@PathVariable Long id) {
+        return this.estadoModelAssembler.toModel(this.service.buscaPorId(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Estado adiciona(@RequestBody @Valid Estado estadoInput) {
-        return this.service.salva(estadoInput);
+    public EstadoModel adiciona(@RequestBody @Valid Estado estadoInput) {
+        return this.estadoModelAssembler.toModel(this.service.salva(estadoInput));
     }
 
     @PutMapping("/{id}")
-    public Estado atualiza(@PathVariable Long id, @RequestBody @Valid Estado estadoInput) {
-
-        Estado estado = this.service.buscaPorId(id);
-
-        BeanUtils.copyProperties(estadoInput, estado, "id");
-
-        return this.service.salva(estado);
+    public EstadoModel atualiza(@PathVariable Long id, @RequestBody @Valid Estado estadoInput) {
+        try {
+            Estado estado = this.service.buscaPorId(id);
+            this.estadoInputDisassembler.copyToDomainObject(estadoInput, estado);
+            return this.estadoModelAssembler.toModel(this.service.salva(estado));
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")

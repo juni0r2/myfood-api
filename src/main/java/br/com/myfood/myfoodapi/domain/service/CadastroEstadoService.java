@@ -25,8 +25,8 @@ public class CadastroEstadoService {
 
     public Estado buscaPorId(Long id) {
         return this.estadoRepository
-        .findById(id)
-        .orElseThrow(() -> new EstadoNaoEncontradoException(id));
+                .findById(id)
+                .orElseThrow(() -> new EstadoNaoEncontradoException(id));
     }
 
     @Transactional
