@@ -96,6 +96,19 @@ public class RestauranteController {
         return atualiza(id, null);
     }
 
+    @PutMapping("{id}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void ativar(@PathVariable Long id) {
+        this.cadastroRestaurante.ativar(id);
+    }
+
+    @DeleteMapping("{id}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void inativar(@PathVariable Long id) {
+        this.cadastroRestaurante.inativar(id);
+    }
+
+
     private static void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino, HttpServletRequest request) {
         ServletServerHttpRequest serverHttpRequest = new ServletServerHttpRequest(request);
 
