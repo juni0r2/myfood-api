@@ -60,4 +60,16 @@ public class CadastroRestauranteService {
             throw new EntidadeEmUsoException(String.format(MSG_RESTAURANTE_EM_USO,id));
         }
     }
+
+    @Transactional
+    public void ativar(Long id) {
+        Restaurante restaurante = this.buscaPorId(id);
+        restaurante.ativar();
+    }
+
+    @Transactional
+    public void inativar(Long id) {
+        Restaurante restaurante = this.buscaPorId(id);
+        restaurante.inativar();
+    }
 }
