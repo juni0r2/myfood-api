@@ -27,10 +27,13 @@ public class RestauranteInput {
     @NotNull
     private BigDecimal taxaFrete;
 
-
     @Valid
     @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
     @NotNull
     private CozinhaIdInput cozinha;
+
+    @Valid
+    @NotNull
+    private EnderecoInput endereco;
 
 }
