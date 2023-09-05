@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,14 +32,16 @@ public class CadastroFormaPagamentoService {
                 .orElseThrow(() -> new FormaPagamentoNaoEncontrado(id));
     }
 
+    @Transactional
     public FormaPagamento salva(FormaPagamento formaPagamento) {
         return this.repository.save(formaPagamento);
     }
 
+    @Transactional
     public void remove(Long id) {
         try {
-            FormaPagamento formaPagamento = this.buscaPorId(id);
-            this.repository.delete(formaPagamento);
+            this.repository.deleteById(id);
+            this.repository.flush();
         } catch (EmptyResultDataAccessException e) {
             throw new FormaPagamentoNaoEncontrado(id);
         } catch (DataIntegrityViolationException e) {
