@@ -1,7 +1,7 @@
 package br.com.myfood.myfoodapi.api.controller;
 
 import br.com.myfood.myfoodapi.api.assembler.FormaPagamentoAssembler;
-import br.com.myfood.myfoodapi.api.assembler.FormaPagamentoDisassembler;
+import br.com.myfood.myfoodapi.api.assembler.FormaPagamentoInputDisassembler;
 import br.com.myfood.myfoodapi.api.model.FormaPagmentoModel;
 import br.com.myfood.myfoodapi.api.model.input.FormaPagamentoInput;
 import br.com.myfood.myfoodapi.domain.model.FormaPagamento;
@@ -25,17 +25,15 @@ public class FormaPagamentoController {
     private FormaPagamentoAssembler formaPagamentoAssembler;
 
     @Autowired
-    private FormaPagamentoDisassembler formaPagamentoDisassembler;
+    private FormaPagamentoInputDisassembler formaPagamentoDisassembler;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<FormaPagmentoModel>> listar() {
         List<FormaPagamento> formaPagamentos = this.cadastroFormaPagamento.lista();
         return ResponseEntity.ok(this.formaPagamentoAssembler.toCollectionModel(formaPagamentos));
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<FormaPagmentoModel> busca(@PathVariable Long id) {
         return ResponseEntity.ok(this.formaPagamentoAssembler.toModel(this.cadastroFormaPagamento.buscaPorId(id)));
     }
@@ -48,7 +46,6 @@ public class FormaPagamentoController {
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public FormaPagmentoModel atualiza(@PathVariable Long id, @RequestBody @Valid FormaPagamentoInput input) {
         FormaPagamento formaPagamento = this.cadastroFormaPagamento.buscaPorId(id);
         this.formaPagamentoDisassembler.toCopyDomainObject(input, formaPagamento);
