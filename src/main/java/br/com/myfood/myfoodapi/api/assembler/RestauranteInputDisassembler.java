@@ -1,6 +1,7 @@
 package br.com.myfood.myfoodapi.api.assembler;
 
 import br.com.myfood.myfoodapi.api.model.input.RestauranteInput;
+import br.com.myfood.myfoodapi.domain.model.Cidade;
 import br.com.myfood.myfoodapi.domain.model.Cozinha;
 import br.com.myfood.myfoodapi.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
@@ -21,6 +22,11 @@ public class RestauranteInputDisassembler {
         //Resolved [org.springframework.orm.jpa.JpaSystemException: identifier of an instance of
         // br.com.myfood.myfoodapi.domain.model.Cozinha was altered from 1 to 2;
         restaurante.setCozinha(new Cozinha());
+
+        if (restauranteInput.getEndereco() != null) {
+            restaurante.getEndereco().setCidade(new Cidade());
+        }
+
         this.modelMapper.map(restauranteInput, restaurante);
     }
 }

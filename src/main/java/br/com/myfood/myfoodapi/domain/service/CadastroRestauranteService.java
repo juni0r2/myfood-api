@@ -3,6 +3,7 @@ package br.com.myfood.myfoodapi.domain.service;
 import br.com.myfood.myfoodapi.domain.exception.EntidadeEmUsoException;
 import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.exception.RestauranteNaoEncontradoException;
+import br.com.myfood.myfoodapi.domain.model.Cidade;
 import br.com.myfood.myfoodapi.domain.model.Cozinha;
 import br.com.myfood.myfoodapi.domain.model.Restaurante;
 import br.com.myfood.myfoodapi.domain.repository.RestauranteRepository;
@@ -26,6 +27,9 @@ public class CadastroRestauranteService {
     @Autowired
     private CadastroCozinhaService cozinhaService;
 
+    @Autowired
+    private CadastroCidadeService cadastroCidadeService;
+
     public List<Restaurante> listar() {
         List<Restaurante> lista = this.restauranteRepository.findAll();
         lista.get(0).getCozinha().getNome();
@@ -36,8 +40,11 @@ public class CadastroRestauranteService {
     public Restaurante salvar(Restaurante restaurante) {
 
         Long idCozinha = restaurante.getCozinha().getId();
+        Long idCidade = restaurante.getEndereco().getCidade().getId();
         Cozinha cozinha = this.cozinhaService.buscaPorId(idCozinha);
+        Cidade cidade = this.cadastroCidadeService.buscarPorId(idCidade);
         restaurante.setCozinha(cozinha);
+        restaurante.getEndereco().setCidade(cidade);
 
         return this.restauranteRepository.save(restaurante);
     }
