@@ -4,14 +4,13 @@ import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import br.com.myfood.myfoodapi.domain.exception.SenhaAtualNaoConfereException;
 import br.com.myfood.myfoodapi.domain.exception.UsuarioNaoEncontradoException;
 import br.com.myfood.myfoodapi.domain.model.Usuario;
-import br.com.myfood.myfoodapi.api.model.input.SenhaInput;
-import br.com.myfood.myfoodapi.domain.model.dto.SenhaDTO;
 import br.com.myfood.myfoodapi.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CadastroUsuarioService {
@@ -31,6 +30,16 @@ public class CadastroUsuarioService {
 
     @Transactional
     public Usuario salva(Usuario usuario) {
+
+        this.usuarioRepository.detach(usuario);
+        
+        Optional<Usuario> optionalUsuario = this.usuarioRepository.findByEmail(usuario.getEmail());
+
+        if (optionalUsuario.isPresent()) {
+            throw new NegocioException(String.format("Já existe um usuário cadastrado com o email %s",
+                    usuario.getEmail()));
+        }
+
         return this.usuarioRepository.save(usuario);
     }
 
