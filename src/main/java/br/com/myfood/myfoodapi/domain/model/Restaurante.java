@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -46,6 +47,9 @@ public class Restaurante {
     private Endereco endereco;
 
     private Boolean ativo = Boolean.TRUE;
+
+    @NotNull
+    private Boolean aberto = Boolean.TRUE;
 
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos = new ArrayList<>();

@@ -89,16 +89,21 @@ public class RestauranteController {
         return atualiza(id, null);
     }
 
-    @PutMapping("{id}/ativo")
+    @PutMapping("/{id}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void ativar(@PathVariable Long id) {
         this.cadastroRestaurante.ativar(id);
     }
 
-    @DeleteMapping("{id}/ativo")
+    @DeleteMapping("/{id}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void inativar(@PathVariable Long id) {
         this.cadastroRestaurante.inativar(id);
+    }
+
+    @PutMapping("/{id}/fechamento")
+    public void fecha(@PathVariable Long id) {
+
     }
 
 
