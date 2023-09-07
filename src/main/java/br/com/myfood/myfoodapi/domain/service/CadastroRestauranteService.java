@@ -1,10 +1,10 @@
 package br.com.myfood.myfoodapi.domain.service;
 
 import br.com.myfood.myfoodapi.domain.exception.EntidadeEmUsoException;
-import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.exception.RestauranteNaoEncontradoException;
 import br.com.myfood.myfoodapi.domain.model.Cidade;
 import br.com.myfood.myfoodapi.domain.model.Cozinha;
+import br.com.myfood.myfoodapi.domain.model.FormaPagamento;
 import br.com.myfood.myfoodapi.domain.model.Restaurante;
 import br.com.myfood.myfoodapi.domain.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +29,9 @@ public class CadastroRestauranteService {
 
     @Autowired
     private CadastroCidadeService cadastroCidadeService;
+
+    @Autowired
+    private CadastroFormaPagamentoService cadastroFormaPagamentoService;
 
     public List<Restaurante> listar() {
         List<Restaurante> lista = this.restauranteRepository.findAll();
@@ -78,5 +81,21 @@ public class CadastroRestauranteService {
     public void inativar(Long id) {
         Restaurante restaurante = this.buscaPorId(id);
         restaurante.inativar();
+    }
+
+    @Transactional
+    public void associa(Long restauranteId, Long formaPagamentoId) {
+        Restaurante restaurante = this.buscaPorId(restauranteId);
+        FormaPagamento formaPagamento = this.cadastroFormaPagamentoService.buscaPorId(formaPagamentoId);
+
+        restaurante.adicionaFormaPagamento(formaPagamento);
+    }
+
+    @Transactional
+    public void desassocia(Long restauranteId, Long formaPagamentoId) {
+        Restaurante restaurante = this.buscaPorId(restauranteId);
+        FormaPagamento formaPagamento = this.cadastroFormaPagamentoService.buscaPorId(formaPagamentoId);
+
+        restaurante.removeFormaPagamento(formaPagamento);
     }
 }
