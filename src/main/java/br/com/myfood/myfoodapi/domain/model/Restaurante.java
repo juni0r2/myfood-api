@@ -1,24 +1,12 @@
 package br.com.myfood.myfoodapi.domain.model;
 
-import br.com.myfood.myfoodapi.core.validation.Groups;
-import br.com.myfood.myfoodapi.core.validation.Multiplo;
-import br.com.myfood.myfoodapi.core.validation.TaxaFrete;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,4 +62,11 @@ public class Restaurante {
         setAtivo(false);
     }
 
+    public void adicionaFormaPagamento(FormaPagamento formaPagamento) {
+        this.formasPagamento.add(formaPagamento);
+    }
+
+    public void removeFormaPagamento(FormaPagamento formaPagamento) {
+        this.formasPagamento.remove(formaPagamento);
+    }
 }
