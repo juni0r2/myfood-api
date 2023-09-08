@@ -51,8 +51,12 @@ insert into forma_pagamento (id, descricao) values (1, 'Cartão de crédito');
 insert into forma_pagamento (id, descricao) values (2, 'Cartão de débito');
 insert into forma_pagamento (id, descricao) values (3, 'Dinheiro');
 
+insert into grupo (nome) values ('FUNCIONARIO'),('GERENTE'),('DIRETOR');
+
 insert into permissao (id, nome, descricao) values (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
 insert into permissao (id, nome, descricao) values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
+
+insert into grupo_permissao (grupo_id, permissao_id) values (1,1), (2,1), (2,2), (3,1), (3,2);
 
 insert into restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 3);
 
@@ -66,7 +70,7 @@ insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('T-B
 insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Sanduíche X-Tudo', 'Sandubão com muito queijo, hamburger bovino, bacon, ovo, salada e maionese', 19, 1, 5);
 insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 1, 6);
 
-insert into grupo (nome) values ('FUNCIONARIO'),('GERENTE'),('DIRETOR');
+
 
 insert into usuario (nome, email, senha, data_cadastro) values ('Israel Alencar', 'israel@teste.com', '123', utc_timestamp);
 insert into usuario (nome, email, senha, data_cadastro) values ('Diego Dionisio', 'diego@teste.com', '123', utc_timestamp);
