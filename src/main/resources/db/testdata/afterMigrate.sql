@@ -70,9 +70,9 @@ insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('T-B
 insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Sanduíche X-Tudo', 'Sandubão com muito queijo, hamburger bovino, bacon, ovo, salada e maionese', 19, 1, 5);
 insert into produto (nome, descricao, preco, ativo, restaurante_id) values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 1, 6);
 
-
-
 insert into usuario (nome, email, senha, data_cadastro) values ('Israel Alencar', 'israel@teste.com', '123', utc_timestamp);
 insert into usuario (nome, email, senha, data_cadastro) values ('Diego Dionisio', 'diego@teste.com', '123', utc_timestamp);
 insert into usuario (nome, email, senha, data_cadastro) values ('Adriano Ardaia', 'adriano@teste.com', '123', utc_timestamp);
 insert into usuario (nome, email, senha, data_cadastro) values ('Lucas Alencar', 'lucas@teste.com', '123', utc_timestamp);
+
+insert into usuario_grupo (usuario_id, grupo_id) values (1,1),(1,2),(1,3),(2,1),(2,3),(3,2),(3,3);
