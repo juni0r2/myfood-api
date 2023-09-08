@@ -4,7 +4,9 @@ import br.com.myfood.myfoodapi.domain.exception.EntidadeEmUsoException;
 import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.exception.GrupoNaoEncontradoException;
 import br.com.myfood.myfoodapi.domain.model.Grupo;
+import br.com.myfood.myfoodapi.domain.model.Permissao;
 import br.com.myfood.myfoodapi.domain.repository.GrupoRepository;
+import br.com.myfood.myfoodapi.domain.repository.PermissaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -20,6 +22,9 @@ public class CadastroGrupoService {
 
     @Autowired
     private GrupoRepository grupoRepository;
+
+    @Autowired
+    private CadastroPermissaoService cadastroPermissaoService;
 
     public Grupo buscarPorId(Long id) {
         return this.grupoRepository.findById(id)
@@ -45,5 +50,19 @@ public class CadastroGrupoService {
         } catch (EmptyResultDataAccessException e) {
             throw new GrupoNaoEncontradoException(id);
         }
+    }
+
+    @Transactional
+    public void desassociarGrupoPermissao(Long grupoId, Long permissaoId) {
+        Grupo grupo = this.buscarPorId(grupoId);
+        Permissao permissao = this.cadastroPermissaoService.buscaPorId(permissaoId);
+        grupo.desassocia(permissao);
+    }
+
+    @Transactional
+    public void associarGrupoPermissao(Long grupoId, Long permissaoId) {
+        Grupo grupo = this.buscarPorId(grupoId);
+        Permissao permissao = this.cadastroPermissaoService.buscaPorId(permissaoId);
+        grupo.associa(permissao);
     }
 }
