@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -47,6 +48,9 @@ public class Restaurante {
 
     private Boolean ativo = Boolean.TRUE;
 
+    @NotNull
+    private Boolean aberto = Boolean.FALSE;
+
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos = new ArrayList<>();
 
@@ -70,5 +74,13 @@ public class Restaurante {
 
     public void removeFormaPagamento(FormaPagamento formaPagamento) {
         this.formasPagamento.remove(formaPagamento);
+    }
+
+    public void abrir() {
+        this.setAberto(true);
+    }
+
+    public void fechar() {
+        this.setAberto(false);
     }
 }
