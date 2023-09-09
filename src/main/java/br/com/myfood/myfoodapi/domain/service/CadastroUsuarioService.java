@@ -3,6 +3,7 @@ package br.com.myfood.myfoodapi.domain.service;
 import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import br.com.myfood.myfoodapi.domain.exception.SenhaAtualNaoConfereException;
 import br.com.myfood.myfoodapi.domain.exception.UsuarioNaoEncontradoException;
+import br.com.myfood.myfoodapi.domain.model.Grupo;
 import br.com.myfood.myfoodapi.domain.model.Usuario;
 import br.com.myfood.myfoodapi.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class CadastroUsuarioService {
     private static final String MSG_SENHA_NAO_CONFERE = "Senha digitada não confere com senha atual";
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private CadastroGrupoService cadastroGrupoService;
 
     public List<Usuario> lista() {
         return this.usuarioRepository.findAll();
@@ -54,4 +58,17 @@ public class CadastroUsuarioService {
         usuario.setSenha(novaSenha);
     }
 
+    @Transactional
+    public void adicionaGrupoUsuario(Long usuarioId, Long grupoId) {
+        Usuario usuario = this.buscaPorId(usuarioId);
+        Grupo grupo = this.cadastroGrupoService.buscarPorId(grupoId);
+        usuario.adiciona(grupo);
+    }
+
+    @Transactional
+    public void removeGrupoUsuario(Long usuarioId, Long grupoId) {
+        Usuario usuario = this.buscaPorId(usuarioId);
+        Grupo grupo = this.cadastroGrupoService.buscarPorId(grupoId);
+        usuario.remove(grupo);
+    }
 }
