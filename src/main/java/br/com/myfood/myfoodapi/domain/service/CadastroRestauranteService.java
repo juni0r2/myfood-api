@@ -2,10 +2,7 @@ package br.com.myfood.myfoodapi.domain.service;
 
 import br.com.myfood.myfoodapi.domain.exception.EntidadeEmUsoException;
 import br.com.myfood.myfoodapi.domain.exception.RestauranteNaoEncontradoException;
-import br.com.myfood.myfoodapi.domain.model.Cidade;
-import br.com.myfood.myfoodapi.domain.model.Cozinha;
-import br.com.myfood.myfoodapi.domain.model.FormaPagamento;
-import br.com.myfood.myfoodapi.domain.model.Restaurante;
+import br.com.myfood.myfoodapi.domain.model.*;
 import br.com.myfood.myfoodapi.domain.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -32,6 +29,9 @@ public class CadastroRestauranteService {
 
     @Autowired
     private CadastroFormaPagamentoService cadastroFormaPagamentoService;
+
+    @Autowired
+    private CadastroUsuarioService cadastroUsuarioService;
 
     public List<Restaurante> listar() {
         List<Restaurante> lista = this.restauranteRepository.findAll();
@@ -109,5 +109,19 @@ public class CadastroRestauranteService {
     public void fechaRestaurante(Long id) {
         Restaurante restaurante = this.buscaPorId(id);
         restaurante.fechar();
+    }
+
+    @Transactional
+    public void associaUsuarioRestaurante(Long restauranteId, Long usuarioId) {
+        Restaurante restaurante = this.buscaPorId(restauranteId);
+        Usuario usuario = this.cadastroUsuarioService.buscaPorId(usuarioId);
+        restaurante.adicionaUsuario(usuario);
+    }
+
+    @Transactional
+    public void desassociaUsuarioRestaurante(Long restauranteId, Long usuarioId) {
+        Restaurante restaurante = this.buscaPorId(restauranteId);
+        Usuario usuario = this.cadastroUsuarioService.buscaPorId(usuarioId);
+        restaurante.removeUsuario(usuario);
     }
 }
