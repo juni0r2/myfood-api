@@ -84,6 +84,16 @@ public class CadastroRestauranteService {
     }
 
     @Transactional
+    public void ativa(List<Long> restauranteIds) {
+        restauranteIds.forEach(this::ativar);
+    }
+
+    @Transactional
+    public void inativa(List<Long> restauranteIds) {
+        restauranteIds.forEach(this::inativar);
+    }
+
+    @Transactional
     public void associa(Long restauranteId, Long formaPagamentoId) {
         Restaurante restaurante = this.buscaPorId(restauranteId);
         FormaPagamento formaPagamento = this.cadastroFormaPagamentoService.buscaPorId(formaPagamentoId);
