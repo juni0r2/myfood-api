@@ -39,7 +39,7 @@ public class RestauranteProdutoController {
 
     @GetMapping("/{produtoId}")
     public ProdutoModel buscaProdutoRestaurante(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
-        Produto produto = this.cadastroProdutoService.buscaProdutoPorRestaurante(restauranteId, produtoId);
+        Produto produto = this.cadastroProdutoService.buscaPorId(restauranteId, produtoId);
         return this.produtoModelAssembler.toModel(produto);
     }
 
