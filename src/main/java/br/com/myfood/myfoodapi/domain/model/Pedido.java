@@ -29,17 +29,10 @@ public class Pedido {
     private BigDecimal valorTotal;
 
     @CreationTimestamp
-    @Column(nullable = false, columnDefinition = "datetime")
     private OffsetDateTime dataCriacao;
 
-    @CreationTimestamp
-    @Column(columnDefinition = "datetime")
     private OffsetDateTime dataConfirmacao;
-
-    @Column(columnDefinition = "datetime")
     private OffsetDateTime dataCancelamento;
-
-    @Column(columnDefinition = "datetime")
     private OffsetDateTime dataEntrega;
 
     @ManyToOne
@@ -47,7 +40,7 @@ public class Pedido {
     private Restaurante restaurante;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_client_id", nullable = false)
+    @JoinColumn(name = "usuario_cliente_id", nullable = false)
     private Usuario cliente;
 
     @ManyToOne
@@ -58,7 +51,7 @@ public class Pedido {
     private Endereco enderecoPedido;
 
     @Enumerated(EnumType.STRING)
-    private StatusPedido statusPedido;
+    private StatusPedido statusPedido = StatusPedido.CRIADO;
 
     @OneToMany(mappedBy = "pedido")
     private List<ItemPedido> itensPedidos;
