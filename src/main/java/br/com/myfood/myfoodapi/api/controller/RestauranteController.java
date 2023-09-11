@@ -9,6 +9,7 @@ import br.com.myfood.myfoodapi.api.assembler.RestauranteModelAssembler;
 import br.com.myfood.myfoodapi.api.model.RestauranteModel;
 import br.com.myfood.myfoodapi.api.model.input.RestauranteInput;
 import br.com.myfood.myfoodapi.domain.exception.NegocioException;
+import br.com.myfood.myfoodapi.domain.exception.RestauranteNaoEncontradoException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -80,7 +81,7 @@ public class RestauranteController {
 
     @PatchMapping("/{id}")
     public RestauranteModel atualizaParcial(@PathVariable Long id, @RequestBody Map<String, Object> campos,
-                                       HttpServletRequest request) {
+                                            HttpServletRequest request) {
 
         Restaurante restauranteAtual = this.cadastroRestaurante.buscaPorId(id);
 
@@ -99,6 +100,26 @@ public class RestauranteController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void inativar(@PathVariable Long id) {
         this.cadastroRestaurante.inativar(id);
+    }
+
+    @PutMapping("/ativacoes")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void ativar(@RequestBody List<Long> restauranteIds) {
+        try {
+            this.cadastroRestaurante.ativa(restauranteIds);
+        } catch (RestauranteNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
+    }
+
+    @DeleteMapping("/ativacoes")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void inativar(@RequestBody List<Long> restauranteIds) {
+        try {
+            this.cadastroRestaurante.inativa(restauranteIds);
+        } catch (RestauranteNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
     }
 
     @PutMapping("/{id}/abertura")

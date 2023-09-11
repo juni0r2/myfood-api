@@ -30,7 +30,6 @@ public class Restaurante {
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
-
     @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "cozinha_id")
     private Cozinha cozinha;
@@ -60,6 +59,12 @@ public class Restaurante {
             inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
     private Set<FormaPagamento> formasPagamento = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(name = "restaurante_usuario_responsavel",
+            joinColumns = @JoinColumn(name = "restaurante_id"),
+            inverseJoinColumns = @JoinColumn(name = "usuario_id"))
+    private Set<Usuario> usuarios = new HashSet<>();
+
     public void ativar() {
         setAtivo(true);
     }
@@ -82,5 +87,13 @@ public class Restaurante {
 
     public void fechar() {
         this.setAberto(false);
+    }
+
+    public void adicionaUsuario(Usuario usuario) {
+        this.getUsuarios().add(usuario);
+    }
+
+    public void removeUsuario(Usuario usuario) {
+        this.getUsuarios().remove(usuario);
     }
 }

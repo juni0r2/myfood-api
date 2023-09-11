@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CadastroProdutoService {
@@ -19,13 +20,9 @@ public class CadastroProdutoService {
     @Autowired
     private CadastroRestauranteService cadastroRestauranteService;
 
-    public Produto buscaProdutoPorRestaurante(Long restauranteId, Long produtoId) {
-        return this.buscaPorId(produtoId,  restauranteId);
-    }
-
-    public Produto buscaPorId(Long idProduto, Long idRestaurante) {
-        return this.produtoRespositoy.findByIdAndRestauranteId(idProduto, idRestaurante)
-                .orElseThrow(() -> new ProdutoNaoEncontradoException(idProduto, idRestaurante));
+    public Produto buscaPorId(Long restauranteId, Long produtoId) {
+        return this.produtoRespositoy.findById(restauranteId, produtoId)
+                .orElseThrow(() -> new ProdutoNaoEncontradoException(restauranteId, produtoId));
     }
 
 
