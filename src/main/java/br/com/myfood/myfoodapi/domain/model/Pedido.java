@@ -51,8 +51,24 @@ public class Pedido {
     private Endereco enderecoPedido;
 
     @Enumerated(EnumType.STRING)
-    private StatusPedido statusPedido = StatusPedido.CRIADO;
+    private StatusPedido status = StatusPedido.CRIADO;
 
     @OneToMany(mappedBy = "pedido")
     private List<ItemPedido> itensPedidos;
+
+    public void calcularValorTotal() {
+        this.subTotal = getItensPedidos().stream()
+                .map(ItemPedido::getPrecoTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        this.valorTotal = this.subTotal.add(this.taxaFrete);
+    }
+
+    public void definirFrete() {
+        setTaxaFrete(getRestaurante().getTaxaFrete());
+    }
+
+    public void atribuirPedidoAosItens() {
+        this.itensPedidos.forEach(itemPedido -> itemPedido.setPedido(this));
+    }
 }

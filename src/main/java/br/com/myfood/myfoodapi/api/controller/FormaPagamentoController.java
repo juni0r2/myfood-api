@@ -2,7 +2,7 @@ package br.com.myfood.myfoodapi.api.controller;
 
 import br.com.myfood.myfoodapi.api.assembler.FormaPagamentoAssembler;
 import br.com.myfood.myfoodapi.api.assembler.FormaPagamentoInputDisassembler;
-import br.com.myfood.myfoodapi.api.model.FormaPagmentoModel;
+import br.com.myfood.myfoodapi.api.model.FormaPagamentoModel;
 import br.com.myfood.myfoodapi.api.model.input.FormaPagamentoInput;
 import br.com.myfood.myfoodapi.domain.model.FormaPagamento;
 import br.com.myfood.myfoodapi.domain.service.CadastroFormaPagamentoService;
@@ -28,25 +28,25 @@ public class FormaPagamentoController {
     private FormaPagamentoInputDisassembler formaPagamentoDisassembler;
 
     @GetMapping
-    public ResponseEntity<List<FormaPagmentoModel>> listar() {
+    public ResponseEntity<List<FormaPagamentoModel>> listar() {
         List<FormaPagamento> formaPagamentos = this.cadastroFormaPagamento.lista();
         return ResponseEntity.ok(this.formaPagamentoAssembler.toCollectionModel(formaPagamentos));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FormaPagmentoModel> busca(@PathVariable Long id) {
+    public ResponseEntity<FormaPagamentoModel> busca(@PathVariable Long id) {
         return ResponseEntity.ok(this.formaPagamentoAssembler.toModel(this.cadastroFormaPagamento.buscaPorId(id)));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FormaPagmentoModel cria(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
+    public FormaPagamentoModel cria(@RequestBody @Valid FormaPagamentoInput formaPagamentoInput) {
         FormaPagamento formaPagamento = this.formaPagamentoDisassembler.toDomainObject(formaPagamentoInput);
         return this.formaPagamentoAssembler.toModel(this.cadastroFormaPagamento.salva(formaPagamento));
     }
 
     @PutMapping("/{id}")
-    public FormaPagmentoModel atualiza(@PathVariable Long id, @RequestBody @Valid FormaPagamentoInput input) {
+    public FormaPagamentoModel atualiza(@PathVariable Long id, @RequestBody @Valid FormaPagamentoInput input) {
         FormaPagamento formaPagamento = this.cadastroFormaPagamento.buscaPorId(id);
         this.formaPagamentoDisassembler.toCopyDomainObject(input, formaPagamento);
         return this.formaPagamentoAssembler.toModel(this.cadastroFormaPagamento.salva(formaPagamento));

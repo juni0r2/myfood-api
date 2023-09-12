@@ -96,4 +96,12 @@ public class Restaurante {
     public void removeUsuario(Usuario usuario) {
         this.getUsuarios().remove(usuario);
     }
+
+    public boolean aceitaFormaPagamento(FormaPagamento formaPagamento) {
+        return getFormasPagamento().contains(formaPagamento);
+    }
+
+    public boolean naoAceitaFormaPagamento(FormaPagamento formaPagamento) {
+        return !getFormasPagamento().contains(formaPagamento);
+    }
 }

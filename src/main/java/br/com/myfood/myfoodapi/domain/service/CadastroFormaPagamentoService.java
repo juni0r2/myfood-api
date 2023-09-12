@@ -1,8 +1,6 @@
 package br.com.myfood.myfoodapi.domain.service;
 
-import br.com.myfood.myfoodapi.api.model.FormaPagmentoModel;
 import br.com.myfood.myfoodapi.domain.exception.EntidadeEmUsoException;
-import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.exception.FormaPagamentoNaoEncontrado;
 import br.com.myfood.myfoodapi.domain.model.FormaPagamento;
 import br.com.myfood.myfoodapi.domain.repository.FormaPagamentoRepository;
