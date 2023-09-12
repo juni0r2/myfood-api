@@ -1,8 +1,7 @@
 package br.com.myfood.myfoodapi.api.controller;
 
 import br.com.myfood.myfoodapi.api.assembler.FormaPagamentoAssembler;
-import br.com.myfood.myfoodapi.api.model.FormaPagmentoModel;
-import br.com.myfood.myfoodapi.domain.model.FormaPagamento;
+import br.com.myfood.myfoodapi.api.model.FormaPagamentoModel;
 import br.com.myfood.myfoodapi.domain.model.Restaurante;
 import br.com.myfood.myfoodapi.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class RestauranteFormaPagamentoController {
     private CadastroRestauranteService cadastroRestauranteService;
 
     @GetMapping
-    public List<FormaPagmentoModel> lista(@PathVariable Long restauranteId) {
+    public List<FormaPagamentoModel> lista(@PathVariable Long restauranteId) {
         Restaurante restaurante = this.cadastroRestauranteService.buscaPorId(restauranteId);
         return this.formaPagamentoAssembler.toCollectionModel(restaurante.getFormasPagamento());
     }
