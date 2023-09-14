@@ -8,8 +8,10 @@ import br.com.myfood.myfoodapi.api.assembler.RestauranteInputDisassembler;
 import br.com.myfood.myfoodapi.api.assembler.RestauranteModelAssembler;
 import br.com.myfood.myfoodapi.api.model.RestauranteModel;
 import br.com.myfood.myfoodapi.api.model.input.RestauranteInput;
+import br.com.myfood.myfoodapi.api.model.view.RestauranteView;
 import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import br.com.myfood.myfoodapi.domain.exception.RestauranteNaoEncontradoException;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -17,6 +19,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -41,10 +44,35 @@ public class RestauranteController {
     @Autowired
     private RestauranteInputDisassembler restauranteInputDisassembler;
 
+    @JsonView({RestauranteView.Resumo.class})
     @GetMapping
     public List<RestauranteModel> lista() {
         return this.restauranteModelAssembler.toCollectionModel(this.cadastroRestaurante.listar());
     }
+
+    @JsonView({RestauranteView.ApenasNome.class})
+    @GetMapping(params = "projecao=apenas-nome")
+    public List<RestauranteModel> ApenasNome() {
+        return lista();
+    }
+
+//    @GetMapping
+//    public MappingJacksonValue resuma(@RequestParam(required = false) String projecao) {
+//
+//        List<Restaurante> listar = this.cadastroRestaurante.listar();
+//        List<RestauranteModel> restauranteModels = this.restauranteModelAssembler.toCollectionModel(listar);
+//        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(restauranteModels);
+//
+//        mappingJacksonValue.setSerializationView(RestauranteView.Resumo.class);
+//
+//        if ("apenas-nome".equals(projecao)) {
+//            mappingJacksonValue.setSerializationView(RestauranteView.ApenasNome.class);
+//        } else if ("completo".equals(projecao)) {
+//            mappingJacksonValue.setSerializationView(null);
+//        }
+//
+//        return mappingJacksonValue;
+//    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
