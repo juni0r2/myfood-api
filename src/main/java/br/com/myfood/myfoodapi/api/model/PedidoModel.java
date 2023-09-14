@@ -1,11 +1,8 @@
 package br.com.myfood.myfoodapi.api.model;
 
-import br.com.myfood.myfoodapi.domain.model.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -27,5 +24,5 @@ public class PedidoModel {
     private UsuarioModel cliente;
     private FormaPagamentoModel formaPagamento;
     private EnderecoModel enderecoPedido;
-    private List<ItemPedidoModel> itensPedidos;
+    private List<ItemPedidoModel> itensPedido;
 }

@@ -2,17 +2,20 @@ package br.com.myfood.myfoodapi.domain.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
+@ToString
 public class Pedido {
     @Id
     @EqualsAndHashCode.Include
@@ -53,22 +56,16 @@ public class Pedido {
     @Enumerated(EnumType.STRING)
     private StatusPedido status = StatusPedido.CRIADO;
 
-    @OneToMany(mappedBy = "pedido")
-    private List<ItemPedido> itensPedidos;
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    private List<ItemPedido> itensPedido = new ArrayList<>();
 
     public void calcularValorTotal() {
-        this.subTotal = getItensPedidos().stream()
+        getItensPedido().forEach(ItemPedido::calcularPrecoTotal);
+
+        this.subTotal = getItensPedido().stream()
                 .map(ItemPedido::getPrecoTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         this.valorTotal = this.subTotal.add(this.taxaFrete);
-    }
-
-    public void definirFrete() {
-        setTaxaFrete(getRestaurante().getTaxaFrete());
-    }
-
-    public void atribuirPedidoAosItens() {
-        this.itensPedidos.forEach(itemPedido -> itemPedido.setPedido(this));
     }
 }
