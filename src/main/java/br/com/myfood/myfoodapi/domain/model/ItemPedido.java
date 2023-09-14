@@ -33,4 +33,17 @@ public class ItemPedido {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Pedido pedido;
+
+    public void calcularPrecoTotal() {
+
+        if (this.precoUnitario == null) {
+            this.precoUnitario = BigDecimal.ZERO;
+        }
+
+        if (this.quantidade == null) {
+            this.quantidade = 0;
+        }
+
+        this.precoTotal = this.precoUnitario.multiply(new BigDecimal(this.quantidade));
+    }
 }
