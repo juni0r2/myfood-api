@@ -35,9 +35,9 @@ public class CadastroPedidoService {
         return this.pedidoRepository.findAll();
     }
 
-    public Pedido buscaPorId(Long pedidoId) {
-        return this.pedidoRepository.findById(pedidoId)
-                .orElseThrow(() -> new PedidoNaoEncontradoException(pedidoId));
+    public Pedido buscaPorCodigo(final String codigo) {
+        return this.pedidoRepository.findByCodigo(codigo)
+                .orElseThrow(() -> new PedidoNaoEncontradoException(codigo));
     }
 
     @Transactional

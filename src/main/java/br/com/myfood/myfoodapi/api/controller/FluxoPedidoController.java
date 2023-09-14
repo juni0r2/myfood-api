@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/pedidos/{pedidoId}")
+@RequestMapping("/pedidos/{codigo}")
 public class FluxoPedidoController {
 
     @Autowired
@@ -14,19 +14,19 @@ public class FluxoPedidoController {
 
     @PutMapping("/confirmacao")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void confirma(@PathVariable Long pedidoId) {
-        this.fluxPedidoService.confirmar(pedidoId);
+    public void confirma(@PathVariable String codigo) {
+        this.fluxPedidoService.confirmar(codigo);
     }
 
     @PutMapping("/cancelamento")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void cancela(@PathVariable Long pedidoId) {
-        this.fluxPedidoService.cancelar(pedidoId);
+    public void cancela(@PathVariable String codigo) {
+        this.fluxPedidoService.cancelar(codigo);
     }
 
     @PutMapping("/entrega")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void entrega(@PathVariable Long pedidoId) {
-        this.fluxPedidoService.entregar(pedidoId);
+    public void entrega(@PathVariable String codigo) {
+        this.fluxPedidoService.entregar(codigo);
     }
 }
