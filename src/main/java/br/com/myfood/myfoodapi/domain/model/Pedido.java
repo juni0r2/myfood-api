@@ -1,5 +1,6 @@
 package br.com.myfood.myfoodapi.domain.model;
 
+import br.com.myfood.myfoodapi.domain.exception.NegocioException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -7,7 +8,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,5 +67,30 @@ public class Pedido {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         this.valorTotal = this.subTotal.add(this.taxaFrete);
+    }
+
+    public void confirmar() {
+        setStatus(StatusPedido.CONFIRMADO);
+        setDataConfirmacao(OffsetDateTime.now());
+    }
+
+    public void cancelar() {
+        setStatus(StatusPedido.CANCELADO);
+        setDataConfirmacao(OffsetDateTime.now());
+    }
+
+    public void entregar() {
+        setStatus(StatusPedido.ENTREGUE);
+        setDataConfirmacao(OffsetDateTime.now());
+    }
+
+    private void setStatus(StatusPedido statusNovo) {
+        if (getStatus().naoPodeAlterarpara(statusNovo)) {
+            throw new NegocioException(String.format("Status do pedido %d não pode ser alterado de %s para %s",
+                    getId(), getStatus().getDescricao(),
+                    statusNovo.getDescricao()));
+        }
+
+        this.status = statusNovo;
     }
 }
