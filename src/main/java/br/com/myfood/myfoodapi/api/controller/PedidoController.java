@@ -9,8 +9,13 @@ import br.com.myfood.myfoodapi.api.model.input.PedidoInput;
 import br.com.myfood.myfoodapi.domain.model.Pedido;
 import br.com.myfood.myfoodapi.domain.model.Usuario;
 import br.com.myfood.myfoodapi.domain.service.CadastroPedidoService;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,9 +36,27 @@ public class PedidoController {
 
     @Autowired
     private CadastroPedidoService cadastroPedidoService;
+    //    @GetMapping
+//    public List<PedidoResumoModel> lista() {
+//        return this.pedidoResumoModelAssembler.toCollectionModel(this.cadastroPedidoService.lista());
+//    }
+
     @GetMapping
-    public List<PedidoResumoModel> lista() {
-        return this.pedidoResumoModelAssembler.toCollectionModel(this.cadastroPedidoService.lista());
+    public MappingJacksonValue lista(@RequestParam(required = false) String campos) {
+        List<Pedido> pedidos = this.cadastroPedidoService.lista();
+        List<PedidoResumoModel> pedidoResumoModels = this.pedidoResumoModelAssembler.toCollectionModel(pedidos);
+
+        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(pedidoResumoModels);
+
+        SimpleFilterProvider simpleFilterProvider = new SimpleFilterProvider();
+        simpleFilterProvider.setDefaultFilter(SimpleBeanPropertyFilter.serializeAll());
+        mappingJacksonValue.setFilters(simpleFilterProvider);
+
+        if (StringUtils.isNotBlank(campos)) {
+            simpleFilterProvider.setDefaultFilter(SimpleBeanPropertyFilter.filterOutAllExcept(campos.split(",")));
+        }
+
+        return mappingJacksonValue;
     }
 
     @GetMapping("/{codigoPedido}")

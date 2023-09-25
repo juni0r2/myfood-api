@@ -1,5 +1,6 @@
 package br.com.myfood.myfoodapi.api.model;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+@JsonFilter(value = "pedidoFilter")
 @Getter
 @Setter
 public class PedidoResumoModel {
