@@ -6,6 +6,7 @@ import br.com.myfood.myfoodapi.api.model.ProdutoModel;
 import br.com.myfood.myfoodapi.api.model.input.ProdutoInput;
 import br.com.myfood.myfoodapi.domain.model.Produto;
 import br.com.myfood.myfoodapi.domain.model.Restaurante;
+import br.com.myfood.myfoodapi.domain.repository.ProdutoRespositoy;
 import br.com.myfood.myfoodapi.domain.service.CadastroProdutoService;
 import br.com.myfood.myfoodapi.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +32,20 @@ public class RestauranteProdutoController {
     @Autowired
     private ProdutoInputDisassembler produtoInputDisassembler;
 
+    @Autowired
+    private ProdutoRespositoy produtoRespositoy;
+
     @GetMapping
-    public List<ProdutoModel> lista(@PathVariable Long restauranteId) {
+    public List<ProdutoModel> lista(@PathVariable Long restauranteId, @RequestParam(required = false) boolean inativo) {
         Restaurante restaurante = this.cadastroRestauranteService.buscaPorId(restauranteId);
-        return this.produtoModelAssembler.toCollectionModel(restaurante.getProdutos());
+        List<Produto> produtos = null;
+
+        if (inativo) {
+            produtos = this.produtoRespositoy.findTodosByRestaurante(restaurante);
+        } else {
+            produtos = this.produtoRespositoy.findAtivosByRestaurante(restaurante);
+        }
+        return this.produtoModelAssembler.toCollectionModel(produtos);
     }
 
     @GetMapping("/{produtoId}")
@@ -53,7 +64,7 @@ public class RestauranteProdutoController {
     }
 
     @PutMapping("/{idProduto}")
-    public ProdutoModel atualiza(@PathVariable Long idProduto,@PathVariable Long restauranteId, @RequestBody @Valid ProdutoInput produtoInput) {
+    public ProdutoModel atualiza(@PathVariable Long idProduto, @PathVariable Long restauranteId, @RequestBody @Valid ProdutoInput produtoInput) {
         Produto produto = this.cadastroProdutoService.buscaPorId(idProduto, restauranteId);
         this.produtoInputDisassembler.copyToDomainOject(produtoInput, produto);
         return this.produtoModelAssembler.toModel(this.cadastroProdutoService.salva(produto));
