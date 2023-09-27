@@ -8,7 +8,10 @@ import br.com.myfood.myfoodapi.api.model.PedidoResumoModel;
 import br.com.myfood.myfoodapi.api.model.input.PedidoInput;
 import br.com.myfood.myfoodapi.domain.model.Pedido;
 import br.com.myfood.myfoodapi.domain.model.Usuario;
+import br.com.myfood.myfoodapi.domain.repository.PedidoRepository;
+import br.com.myfood.myfoodapi.domain.repository.filter.PedidoFilter;
 import br.com.myfood.myfoodapi.domain.service.CadastroPedidoService;
+import br.com.myfood.myfoodapi.infrastructore.spec.PedidoSpecs;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -36,28 +39,33 @@ public class PedidoController {
 
     @Autowired
     private CadastroPedidoService cadastroPedidoService;
-    //    @GetMapping
-//    public List<PedidoResumoModel> lista() {
-//        return this.pedidoResumoModelAssembler.toCollectionModel(this.cadastroPedidoService.lista());
-//    }
+
+    @Autowired
+    private PedidoRepository pedidoRepository;
 
     @GetMapping
-    public MappingJacksonValue lista(@RequestParam(required = false) String campos) {
-        List<Pedido> pedidos = this.cadastroPedidoService.lista();
-        List<PedidoResumoModel> pedidoResumoModels = this.pedidoResumoModelAssembler.toCollectionModel(pedidos);
-
-        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(pedidoResumoModels);
-
-        SimpleFilterProvider simpleFilterProvider = new SimpleFilterProvider();
-        simpleFilterProvider.setDefaultFilter(SimpleBeanPropertyFilter.serializeAll());
-        mappingJacksonValue.setFilters(simpleFilterProvider);
-
-        if (StringUtils.isNotBlank(campos)) {
-            simpleFilterProvider.setDefaultFilter(SimpleBeanPropertyFilter.filterOutAllExcept(campos.split(",")));
-        }
-
-        return mappingJacksonValue;
+    public List<PedidoResumoModel> pesquisar(PedidoFilter pedidoFilter) {
+        List<Pedido> pedidos = this.pedidoRepository.findAll(PedidoSpecs.usandoFiltro(pedidoFilter));
+        return this.pedidoResumoModelAssembler.toCollectionModel(pedidos);
     }
+
+//    @GetMapping
+//    public MappingJacksonValue lista(@RequestParam(required = false) String campos) {
+//        List<Pedido> pedidos = this.cadastroPedidoService.lista();
+//        List<PedidoResumoModel> pedidoResumoModels = this.pedidoResumoModelAssembler.toCollectionModel(pedidos);
+//
+//        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(pedidoResumoModels);
+//
+//        SimpleFilterProvider simpleFilterProvider = new SimpleFilterProvider();
+//        simpleFilterProvider.setDefaultFilter(SimpleBeanPropertyFilter.serializeAll());
+//        mappingJacksonValue.setFilters(simpleFilterProvider);
+//
+//        if (StringUtils.isNotBlank(campos)) {
+//            simpleFilterProvider.setDefaultFilter(SimpleBeanPropertyFilter.filterOutAllExcept(campos.split(",")));
+//        }
+//
+//        return mappingJacksonValue;
+//    }
 
     @GetMapping("/{codigoPedido}")
     public PedidoModel buscaPorId(@PathVariable String codigoPedido) {
