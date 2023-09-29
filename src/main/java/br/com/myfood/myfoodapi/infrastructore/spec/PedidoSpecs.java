@@ -14,16 +14,18 @@ public class PedidoSpecs {
     public static Specification<Pedido> usandoFiltro(PedidoFilter filtro) {
         return (root, query, builder) -> {
 
-            root.fetch("restaurante").fetch("cozinha");
-            root.fetch("cliente");
+            if (Pedido.class.equals(query.getResultType())) {
+                root.fetch("restaurante").fetch("cozinha");
+                root.fetch("cliente");
+            }
 
             var predicates = new ArrayList<Predicate>();
 
-            if (filtro.getClienteId() != null ) {
+            if (filtro.getClienteId() != null) {
                 predicates.add(builder.equal(root.get("cliente"), filtro.getClienteId()));
             }
 
-            if (filtro.getRestauranteId() != null ) {
+            if (filtro.getRestauranteId() != null) {
                 predicates.add(builder.equal(root.get("restaurante"), filtro.getRestauranteId()));
             }
 
