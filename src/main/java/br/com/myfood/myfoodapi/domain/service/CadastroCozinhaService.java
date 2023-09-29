@@ -7,9 +7,10 @@ import br.com.myfood.myfoodapi.domain.exception.EntidadeEmUsoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.myfood.myfoodapi.domain.exception.EntidadeNaoEncontradaException;
 import br.com.myfood.myfoodapi.domain.model.Cozinha;
 import br.com.myfood.myfoodapi.domain.repository.CozinhaRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +23,8 @@ public class CadastroCozinhaService {
     @Autowired
     private CozinhaRepository cozinhaRepository;
 
-    public List<Cozinha> listar() {
-        return this.cozinhaRepository.findAll();
+    public Page<Cozinha> listar(Pageable pageable) {
+        return this.cozinhaRepository.findAll(pageable);
     }
 
     @Transactional

@@ -10,6 +10,10 @@ import br.com.myfood.myfoodapi.domain.exception.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,8 +45,11 @@ public class CozinhaController {
     private CozinhaInputDisassembler cozinhaInputDisassembler;
 
     @GetMapping
-    public List<CozinhaModel> lista() {
-        return this.cozinhaModelAssembler.toCollectionModel(this.service.listar());
+    public Page<CozinhaModel> lista(@PageableDefault(size = 10)  Pageable pageable) {
+        Page<Cozinha> cozinhasPage = this.service.listar(pageable);
+        List<CozinhaModel> cozinhasModel = this.cozinhaModelAssembler.toCollectionModel(cozinhasPage.getContent());
+
+        return new PageImpl<>(cozinhasModel, pageable, cozinhasPage.getTotalElements());
     }
 
     @GetMapping("/{id}")
