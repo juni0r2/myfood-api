@@ -5,7 +5,10 @@ import br.com.myfood.myfoodapi.api.assembler.PedidoModelDisassembler;
 import br.com.myfood.myfoodapi.api.assembler.PedidoResumoModelAssembler;
 import br.com.myfood.myfoodapi.api.model.PedidoModel;
 import br.com.myfood.myfoodapi.api.model.PedidoResumoModel;
+import br.com.myfood.myfoodapi.api.model.RestauranteResumoModel;
+import br.com.myfood.myfoodapi.api.model.UsuarioModel;
 import br.com.myfood.myfoodapi.api.model.input.PedidoInput;
+import br.com.myfood.myfoodapi.core.data.PageableTranslator;
 import br.com.myfood.myfoodapi.domain.model.Pedido;
 import br.com.myfood.myfoodapi.domain.model.Usuario;
 import br.com.myfood.myfoodapi.domain.repository.PedidoRepository;
@@ -15,6 +18,7 @@ import br.com.myfood.myfoodapi.infrastructore.spec.PedidoSpecs;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,7 +29,10 @@ import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -48,6 +55,8 @@ public class PedidoController {
 
     @GetMapping
     public Page<PedidoResumoModel> pesquisar(PedidoFilter pedidoFilter, Pageable pageable) {
+
+        pageable = traduzirPageable(pageable);
         Page<Pedido> pedidos = this.pedidoRepository.findAll(PedidoSpecs.usandoFiltro(pedidoFilter), pageable);
         List<PedidoResumoModel> pedidoResumoModels = this.pedidoResumoModelAssembler.toCollectionModel(pedidos.getContent());
 
@@ -88,4 +97,14 @@ public class PedidoController {
         pedido.getCliente().setId(1L);
         return this.pedidoModelAssembler.toModel(this.cadastroPedidoService.emite(pedido));
     }
+
+    private Pageable traduzirPageable(Pageable pageable) {
+        var mapeamento = ImmutableMap.of("codigo", "codigo",
+                "restaurante.nome", "restaurante.nome",
+                "nomeCliente", "cliente.nome",
+                "valorTotal", "valorTotal");
+
+        return PageableTranslator.translate(pageable, mapeamento);
+    }
+
 }
