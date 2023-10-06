@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -65,6 +66,7 @@ public class PedidoController {
         return pagePedidos;
     }
 
+
 //    @GetMapping
 //    public MappingJacksonValue lista(@RequestParam(required = false) String campos) {
 //        List<Pedido> pedidos = this.cadastroPedidoService.lista();
@@ -82,7 +84,6 @@ public class PedidoController {
 //
 //        return mappingJacksonValue;
 //    }
-
     @GetMapping("/{codigoPedido}")
     public PedidoModel buscaPorId(@PathVariable String codigoPedido) {
         Pedido pedido = this.cadastroPedidoService.buscaPorCodigo(codigoPedido);
@@ -99,11 +100,13 @@ public class PedidoController {
     }
 
     private Pageable traduzirPageable(Pageable pageable) {
-        var mapeamento = ImmutableMap.of("codigo", "codigo",
-                "restaurante.nome", "restaurante.nome",
-                "nomeCliente", "cliente.nome",
-                "valorTotal", "valorTotal");
 
+        var mapeamento = ImmutableMap.of(
+                "codigo", "codigo",
+                "subTotal", "subTotal",
+                "dataCriacao", "dataCriacao",
+                "restaurante.nome", "restaurante.nome",
+                "nomeCliente", "cliente.nome");
         return PageableTranslator.translate(pageable, mapeamento);
     }
 
