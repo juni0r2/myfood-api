@@ -86,21 +86,21 @@ insert into restaurante_usuario_responsavel (usuario_id, restaurante_id) values 
 
 insert into pedido (id, codigo, sub_total, taxa_frete, valor_total, data_criacao, status, restaurante_id, usuario_cliente_id,
     forma_pagamento_id, endereco_cidade_id, endereco_bairro, endereco_cep, endereco_logradouro, endereco_numero)
-values (1, 'fcbbe016-532c-11ee-8ea2-00090ffe0001',47.8, 7.8, 55.6, utc_timestamp, 'CRIADO', 1,1,1,1, 'Monte Castelo', '79010170', 'Rachid Neder', '16');
+values (1, 'fcbbe016-532c-11ee-8ea2-00090ffe0001',47.8, 7.8, 55.6, '2023-10-16 12:00:30', 'CRIADO', 1,1,1,1, 'Monte Castelo', '79010170', 'Rachid Neder', '16');
 
 insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)
 values (1, 1, 7, 2, 23.9, 47.8, 'Bem passado');
 
 insert into pedido (id, codigo, sub_total, taxa_frete, valor_total, data_criacao, status, restaurante_id, usuario_cliente_id,
     forma_pagamento_id, endereco_cidade_id, endereco_bairro, endereco_cep, endereco_logradouro, endereco_numero)
-values (2, '89969a33-92e4-41ea-8f58-fb579b6e88e8', 67.6, 9.18, 76.78, utc_timestamp, 'CRIADO', 2,3,2,2, 'Santa Mônica', '79106600', 'Sonora', '54');
+values (2, '89969a33-92e4-41ea-8f58-fb579b6e88e8', 67.6, 9.18, 76.78, '2023-10-16 12:00:30', 'CONFIRMADO', 2,3,2,2, 'Santa Mônica', '79106600', 'Sonora', '54');
 
 insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total)
 values (2, 2, 9, 4, 16.9, 67.6);
 
 insert into pedido (id, codigo, sub_total, taxa_frete, valor_total, data_criacao, status, restaurante_id, usuario_cliente_id,
     forma_pagamento_id, endereco_cidade_id, endereco_bairro, endereco_cep, endereco_logradouro, endereco_numero)
-values (3, '85687a62-30ee-4eaf-8671-7857351d9abd', 146.4, 15.9, 162.3, utc_timestamp, 'CRIADO', 1,1,1,1, 'Coophatrabalho', '7910000', 'Ibirapua', '1000');
+values (3, '85687a62-30ee-4eaf-8671-7857351d9abd', 146.4, 15.9, 162.3, '2023-10-26 12:00:30', 'ENTREGUE', 1,1,1,1, 'Coophatrabalho', '7910000', 'Ibirapua', '1000');
 
 insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total)
 values (6, 3, 9, 3, 48.8, 146.4);
@@ -109,7 +109,7 @@ insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagame
                     endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
                     status, data_criacao, sub_total, taxa_frete, valor_total)
 values (4, 'b8f1abe6-e14b-4700-8850-00e0d823db2a', 1, 1, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil',
-'CRIADO', utc_timestamp, 298.90, 10, 308.90);
+'CONFIRMADO', utc_timestamp, 298.90, 10, 308.90);
 
 insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)
 values (4, 4, 2, 1, 78.9, 78.9, null);
@@ -121,7 +121,7 @@ insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagame
                     endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
                     status, data_criacao, sub_total, taxa_frete, valor_total)
 values (5, '84e2e9f7-429c-4a8e-9107-2ce2525d7316', 4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
-'CRIADO', utc_timestamp, 79, 0, 79);
+'CONFIRMADO', utc_timestamp, 79, 0, 79);
 
 insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)
 values (3, 5, 6, 1, 79, 79, 'Ao ponto');

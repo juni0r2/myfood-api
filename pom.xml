@@ -82,6 +82,12 @@
 			<artifactId>modelmapper</artifactId>
 			<version>${modelmapper.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.collections</groupId>
+			<artifactId>google-collections</artifactId>
+			<version>1.0-rc2</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
