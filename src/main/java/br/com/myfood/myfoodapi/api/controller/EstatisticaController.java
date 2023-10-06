@@ -4,6 +4,7 @@ import br.com.myfood.myfoodapi.domain.model.dto.VendaDiaria;
 import br.com.myfood.myfoodapi.domain.service.VendaQueryService;
 import br.com.myfood.myfoodapi.domain.service.filter.VendaDiariafilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,6 +17,7 @@ public class EstatisticaController {
     @Autowired
     VendaQueryService vendaQueryService;
 
+    @GetMapping("/vendas-diarias")
     List<VendaDiaria> consultarVendasDiarias(VendaDiariafilter filtro) {
         return vendaQueryService.consultarVendasDiarias(filtro);
     }
