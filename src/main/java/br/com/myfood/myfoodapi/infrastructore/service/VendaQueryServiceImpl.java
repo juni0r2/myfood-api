@@ -45,11 +45,11 @@ public class VendaQueryServiceImpl implements VendaQueryService {
         }
 
         if (filtro.getDataCriacaoInicio() != null) {
-            predicates.add(builder.equal(root.get("datacriacao"), filtro.getDataCriacaoInicio()));
+            predicates.add(builder.greaterThanOrEqualTo(root.get("datacriacao"), filtro.getDataCriacaoInicio()));
         }
 
         if (filtro.getDataCriacaoFim() != null) {
-            predicates.add(builder.equal(root.get("datacriacao"), filtro.getDataCriacaoFim()));
+            predicates.add(builder.lessThanOrEqualTo(root.get("datacriacao"), filtro.getDataCriacaoFim()));
         }
 
         query.select(selection);
