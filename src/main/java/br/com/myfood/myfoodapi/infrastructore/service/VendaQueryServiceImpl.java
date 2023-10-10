@@ -30,7 +30,11 @@ public class VendaQueryServiceImpl implements VendaQueryService {
 
         var predicates = new ArrayList<Predicate>();
 
-        var functionDateDataCriacao = builder.function("date", Date.class, root.get("dataCriacao"));
+        var functionConvertTzDataCriacao = builder.function("convert_tz", Date.class, root.get("dataCriacao"),
+                builder.literal("+00:00"),
+                builder.literal("-03:00"));
+
+        var functionDateDataCriacao = builder.function("date", Date.class, functionConvertTzDataCriacao);
 
         var selection = builder.construct(VendaDiaria.class,
                 functionDateDataCriacao,
@@ -45,11 +49,11 @@ public class VendaQueryServiceImpl implements VendaQueryService {
         }
 
         if (filtro.getDataCriacaoInicio() != null) {
-            predicates.add(builder.equal(root.get("datacriacao"), filtro.getDataCriacaoInicio()));
+            predicates.add(builder.greaterThanOrEqualTo(root.get("dataCriacao"), filtro.getDataCriacaoInicio()));
         }
 
         if (filtro.getDataCriacaoFim() != null) {
-            predicates.add(builder.equal(root.get("datacriacao"), filtro.getDataCriacaoFim()));
+            predicates.add(builder.lessThanOrEqualTo(root.get("dataCriacao"), filtro.getDataCriacaoFim()));
         }
 
         query.select(selection);
