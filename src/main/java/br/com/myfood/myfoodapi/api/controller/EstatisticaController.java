@@ -4,7 +4,6 @@ import br.com.myfood.myfoodapi.domain.model.dto.VendaDiaria;
 import br.com.myfood.myfoodapi.domain.service.VendaQueryService;
 import br.com.myfood.myfoodapi.domain.service.VendaReportService;
 import br.com.myfood.myfoodapi.domain.service.filter.VendaDiariafilter;
-import jdk.jfr.Frequency;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -35,7 +34,7 @@ public class EstatisticaController {
     @GetMapping(path = "/vendas-diarias", produces = MediaType.APPLICATION_PDF_VALUE)
     ResponseEntity<byte[]> consultarVendasDiariasPdf(VendaDiariafilter filtro,
                                                 @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
-        byte[] vendasDiariasPdf = this.vendaReportService.consultarVendasDiariasPdf(filtro, timeOffset);
+        byte[] vendasDiariasPdf = this.vendaReportService.emitirVendasDiarias(filtro, timeOffset);
 
         var headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=vendas-diarias.pdf");
