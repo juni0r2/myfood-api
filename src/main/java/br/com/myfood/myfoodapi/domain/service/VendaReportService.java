@@ -5,7 +5,7 @@ import br.com.myfood.myfoodapi.domain.service.filter.VendaDiariafilter;
 
 import java.util.List;
 
-public interface VendaQueryService {
+public interface VendaReportService {
 
-    List<VendaDiaria> consultarVendasDiarias(VendaDiariafilter filtro, String timeOffset);
+    byte[] consultarVendasDiariasPdf(VendaDiariafilter filtro, String timeOffset);
 }

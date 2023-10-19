@@ -1,4 +1,4 @@
-package br.com.myfood.myfoodapi.infrastructore.service;
+package br.com.myfood.myfoodapi.infrastructore.service.query;
 
 import br.com.myfood.myfoodapi.domain.model.Pedido;
 import br.com.myfood.myfoodapi.domain.model.StatusPedido;
@@ -9,8 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CompoundSelection;
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +21,7 @@ public class VendaQueryServiceImpl implements VendaQueryService {
     @PersistenceContext
     EntityManager manager;
     @Override
-    public List<VendaDiaria> consultarVendasDiarias(VendaDiariafilter filtro) {
+    public List<VendaDiaria> consultarVendasDiarias(VendaDiariafilter filtro, String timeOffset) {
         var builder = manager.getCriteriaBuilder();
         var query = builder.createQuery(VendaDiaria.class);
         var root = query.from(Pedido.class);
@@ -32,7 +30,7 @@ public class VendaQueryServiceImpl implements VendaQueryService {
 
         var functionConvertTzDataCriacao = builder.function("convert_tz", Date.class, root.get("dataCriacao"),
                 builder.literal("+00:00"),
-                builder.literal("-03:00"));
+                builder.literal(timeOffset));
 
         var functionDateDataCriacao = builder.function("date", Date.class, functionConvertTzDataCriacao);
 
