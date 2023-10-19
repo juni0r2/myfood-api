@@ -19,6 +19,7 @@
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<modelmapper.version>3.1.0</modelmapper.version>
+		<jasper.report>6.20.6</jasper.report>
 	</properties>
 	<dependencies>
 
@@ -86,6 +87,16 @@
 			<groupId>com.google.collections</groupId>
 			<artifactId>google-collections</artifactId>
 			<version>1.0-rc2</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>${jasper.report}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-functions</artifactId>
+			<version>${jasper.report}</version>
 		</dependency>
 
 	</dependencies>
