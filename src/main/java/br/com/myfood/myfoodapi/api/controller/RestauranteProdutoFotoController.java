@@ -26,7 +26,7 @@ import java.util.UUID;
 public class RestauranteProdutoFotoController {
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void atualizarfoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, FotoProdutoInput fotoProdutoInput) {
+    public void atualizarfoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid FotoProdutoInput fotoProdutoInput) {
 
         var nomeArquivo = UUID.randomUUID().toString() +"-"+ fotoProdutoInput.getArquivo().getOriginalFilename();
         var arquivoFoto = Path.of("C:\\java\\estudos\\catalogo",nomeArquivo);
