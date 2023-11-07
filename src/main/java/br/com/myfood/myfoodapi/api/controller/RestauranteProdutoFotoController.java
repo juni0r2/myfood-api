@@ -1,45 +1,46 @@
 package br.com.myfood.myfoodapi.api.controller;
 
-import br.com.myfood.myfoodapi.api.assembler.ProdutoInputDisassembler;
-import br.com.myfood.myfoodapi.api.assembler.ProdutoModelAssembler;
-import br.com.myfood.myfoodapi.api.model.ProdutoModel;
+import br.com.myfood.myfoodapi.api.assembler.FotoProdutoAssembler;
+import br.com.myfood.myfoodapi.api.model.FotoProdutoModel;
 import br.com.myfood.myfoodapi.api.model.input.FotoProdutoInput;
-import br.com.myfood.myfoodapi.api.model.input.ProdutoInput;
+import br.com.myfood.myfoodapi.domain.model.FotoProduto;
 import br.com.myfood.myfoodapi.domain.model.Produto;
-import br.com.myfood.myfoodapi.domain.model.Restaurante;
-import br.com.myfood.myfoodapi.domain.repository.ProdutoRespositoy;
 import br.com.myfood.myfoodapi.domain.service.CadastroProdutoService;
-import br.com.myfood.myfoodapi.domain.service.CadastroRestauranteService;
+import br.com.myfood.myfoodapi.domain.service.CatalogoFotoProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
 public class RestauranteProdutoFotoController {
 
+    @Autowired
+    private FotoProdutoAssembler fotoProdutoAssembler;
+
+    @Autowired
+    private CadastroProdutoService cadastroProdutoService;
+
+    @Autowired
+    private CatalogoFotoProdutoService catalogoFotoProdutoService;
+
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void atualizarfoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid FotoProdutoInput fotoProdutoInput) {
+    public FotoProdutoModel atualizarfoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid FotoProdutoInput fotoProdutoInput) {
 
-        var nomeArquivo = UUID.randomUUID().toString() +"-"+ fotoProdutoInput.getArquivo().getOriginalFilename();
-        var arquivoFoto = Path.of("C:\\java\\estudos\\catalogo",nomeArquivo);
+        Produto produto = cadastroProdutoService.buscaPorId(restauranteId, produtoId);
+        MultipartFile arquivo = fotoProdutoInput.getArquivo();
+        var fotoProduto = new FotoProduto();
+        fotoProduto.setProduto(produto);
+        fotoProduto.setDescricao(fotoProdutoInput.getDescricao());
+        fotoProduto.setNomeArquivo(arquivo.getOriginalFilename());
+        fotoProduto.setTamanho(arquivo.getSize());
+        fotoProduto.setContentType(arquivo.getContentType());
 
-        System.out.println(fotoProdutoInput.getDescricao());
-        System.out.println(arquivoFoto);
-        System.out.println(fotoProdutoInput.getArquivo().getContentType());
+        FotoProduto fotoSalva = this.catalogoFotoProdutoService.salvar(fotoProduto);
 
-        try {
-            fotoProdutoInput.getArquivo().transferTo(arquivoFoto);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        return fotoProdutoAssembler.toModel(fotoSalva);
     }
 }
