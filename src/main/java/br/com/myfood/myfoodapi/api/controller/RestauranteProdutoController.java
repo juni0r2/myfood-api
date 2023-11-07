@@ -6,7 +6,7 @@ import br.com.myfood.myfoodapi.api.model.ProdutoModel;
 import br.com.myfood.myfoodapi.api.model.input.ProdutoInput;
 import br.com.myfood.myfoodapi.domain.model.Produto;
 import br.com.myfood.myfoodapi.domain.model.Restaurante;
-import br.com.myfood.myfoodapi.domain.repository.ProdutoRespositoy;
+import br.com.myfood.myfoodapi.domain.repository.ProdutoRepository;
 import br.com.myfood.myfoodapi.domain.service.CadastroProdutoService;
 import br.com.myfood.myfoodapi.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class RestauranteProdutoController {
     private ProdutoInputDisassembler produtoInputDisassembler;
 
     @Autowired
-    private ProdutoRespositoy produtoRespositoy;
+    private ProdutoRepository produtoRepository;
 
     @GetMapping
     public List<ProdutoModel> lista(@PathVariable Long restauranteId, @RequestParam(required = false) boolean inativo) {
@@ -41,9 +41,9 @@ public class RestauranteProdutoController {
         List<Produto> produtos = null;
 
         if (inativo) {
-            produtos = this.produtoRespositoy.findTodosByRestaurante(restaurante);
+            produtos = this.produtoRepository.findTodosByRestaurante(restaurante);
         } else {
-            produtos = this.produtoRespositoy.findAtivosByRestaurante(restaurante);
+            produtos = this.produtoRepository.findAtivosByRestaurante(restaurante);
         }
         return this.produtoModelAssembler.toCollectionModel(produtos);
     }

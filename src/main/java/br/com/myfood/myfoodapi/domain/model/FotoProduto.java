@@ -14,7 +14,7 @@ public class FotoProduto {
 
     @EqualsAndHashCode.Include
     @Id
-    @Column(name="produto_id")
+    @Column(name = "produto_id")
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -27,4 +27,13 @@ public class FotoProduto {
     @NotBlank
     private String contentType;
     private Long tamanho;
+
+    public Long getRestauranteId() {
+
+        if (getProduto() != null) {
+            return getProduto().getRestaurante().getId();
+        }
+
+        return null;
+    }
 }
