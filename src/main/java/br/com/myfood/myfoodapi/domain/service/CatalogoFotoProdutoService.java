@@ -22,9 +22,7 @@ public class CatalogoFotoProdutoService {
 
         Optional<FotoProduto> op = this.produtoRepository.findFotoById(restauranteId, produtoId);
 
-        if (op.isPresent()) {
-            this.produtoRepository.delete(op.get());
-        }
+        op.ifPresent(fotoProduto -> this.produtoRepository.delete(fotoProduto));
 
         return this.produtoRepository.save(foto);
     }
