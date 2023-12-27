@@ -8,19 +8,18 @@ services:
   myfood-mysql:
     image: mysql:8.0
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     ports:
-      - 3306:3306
+      - "3306:3306"
     networks:
       - myfood-network
 
   myfood-api:
-    #build: .
-    image: myfood-api
+    image: myfood-api:latest
     environment:
       DB_HOST: myfood-mysql
     ports:
-      - 8080:8080
+      - "8080:8080"
     networks:
       - myfood-network
     depends_on:
