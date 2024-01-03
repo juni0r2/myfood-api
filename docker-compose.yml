@@ -16,6 +16,7 @@ services:
 
   myfood-api:
     image: myfood-api:latest
+    command: ["/wait-for-it.sh","myfood-mysql:3306","-t","30","--","java", "-jar", "api.jar"]
     environment:
       DB_HOST: myfood-mysql
     ports:
