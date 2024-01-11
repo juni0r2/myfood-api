@@ -45,8 +45,6 @@ public class CatalogoFotoProdutoService {
 
         this.fotoStorageService.substitui(nomeArquivoExistente, novaFoto);
 
-//        this.fotoStorageService.armazenar(novaFoto);
-
         return foto;
     }
 }
