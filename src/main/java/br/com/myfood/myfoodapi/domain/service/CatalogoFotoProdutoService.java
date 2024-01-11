@@ -1,5 +1,7 @@
 package br.com.myfood.myfoodapi.domain.service;
 
+import br.com.myfood.myfoodapi.domain.exception.FotoProdutoNaoEncontradoException;
+import br.com.myfood.myfoodapi.domain.exception.ProdutoNaoEncontradoException;
 import br.com.myfood.myfoodapi.domain.model.FotoProduto;
 import br.com.myfood.myfoodapi.domain.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +48,10 @@ public class CatalogoFotoProdutoService {
         this.fotoStorageService.substitui(nomeArquivoExistente, novaFoto);
 
         return foto;
+    }
+
+    public FotoProduto buscarPorId(Long restauranteId, Long produtoId) {
+        return this.produtoRepository.findFotoById(restauranteId, produtoId)
+                .orElseThrow(() -> new FotoProdutoNaoEncontradoException(restauranteId, produtoId));
     }
 }
